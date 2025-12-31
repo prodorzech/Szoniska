@@ -40,7 +40,7 @@ To zainstaluje wszystkie wymagane pakiety (Next.js, React, Prisma, NextAuth, Fra
 3. W menu: APIs & Services → Credentials
 4. Kliknij "Create Credentials" → "OAuth 2.0 Client ID"
 5. Application type: Web application
-6. Authorized redirect URIs: `http://localhost:3000/api/auth/callback/google`
+6. Authorized redirect URIs: `https://szoniska.pl/api/auth/callback/google`
 7. Skopiuj Client ID i Client Secret do `.env`
 
 ### Discord OAuth:
@@ -49,7 +49,7 @@ To zainstaluje wszystkie wymagane pakiety (Next.js, React, Prisma, NextAuth, Fra
 2. Kliknij "New Application"
 3. Podaj nazwę (np. "Szoniska")
 4. W menu: OAuth2
-5. Dodaj Redirect: `http://localhost:3000/api/auth/callback/discord`
+5. Dodaj Redirect: `https://szoniska.pl/api/auth/callback/discord`
 6. Skopiuj Client ID i Client Secret do `.env`
 
 ### Znajdź swoje Discord ID (dla admina):
@@ -74,7 +74,7 @@ DATABASE_URL="mongodb://localhost:27017/szoniska"
 # LUB dla MongoDB Atlas:
 # DATABASE_URL="mongodb+srv://user:password@cluster.mongodb.net/szoniska"
 
-NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_URL="https://szoniska.pl"
 NEXTAUTH_SECRET="WYGENERUJ_TUTAJ_LOSOWY_SECRET"
 
 GOOGLE_CLIENT_ID="twoj-google-client-id"
@@ -105,7 +105,7 @@ npx prisma db push
 npm run dev
 ```
 
-Otwórz przeglądarkę: http://localhost:3000
+Otwórz przeglądarkę: https://szoniska.pl
 
 ## 🎉 Gotowe!
 

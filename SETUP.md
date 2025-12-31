@@ -26,12 +26,12 @@ npm run dev
 1. https://console.cloud.google.com/
 2. Nowy projekt
 3. APIs & Services → Credentials → Create OAuth 2.0 Client ID
-4. Authorized redirect URIs: http://localhost:3000/api/auth/callback/google
+4. Authorized redirect URIs: https://szoniska.pl/api/auth/callback/google
 
 ### Discord OAuth:
 1. https://discord.com/developers/applications
 2. New Application
-3. OAuth2 → Add Redirect: http://localhost:3000/api/auth/callback/discord
+3. OAuth2 → Add Redirect: https://szoniska.pl/api/auth/callback/discord
 4. W Settings → Bot możesz dodać bota (opcjonalnie)
 
 ### Znajdowanie Discord ID:
