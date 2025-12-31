@@ -33,9 +33,9 @@ export async function GET(req: NextRequest) {
 
     if (search) {
       whereCondition.OR = [
-        { title: { contains: search, mode: 'insensitive' } },
-        { user: { name: { contains: search, mode: 'insensitive' } } },
-        { user: { discordId: { contains: search, mode: 'insensitive' } } },
+        { title: { contains: search } },
+        { user: { name: { contains: search } } },
+        { user: { discordId: { contains: search } } },
       ];
     }
 
@@ -60,7 +60,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(posts);
   } catch (error) {
     console.error('Error fetching posts:', error);
-    return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'Failed to fetch posts',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
