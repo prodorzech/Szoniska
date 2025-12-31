@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
 import { prisma } from '@/lib/prisma';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 // Generowanie sekretu 2FA i QR code
 export async function GET(request: NextRequest) {
