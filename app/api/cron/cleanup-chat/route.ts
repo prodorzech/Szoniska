@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 // Endpoint do automatycznego czyszczenia całego chatu co 30 dni
 // Można wywołać przez cron job lub scheduled task (np. codziennie sprawdza i co 30 dni czyści)
 export async function GET() {

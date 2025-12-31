@@ -5,6 +5,8 @@ import QRCode from 'qrcode';
 import { prisma } from '@/lib/prisma';
 import { authOptions } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 // Generowanie sekretu 2FA i QR code
 export async function GET(request: NextRequest) {
   try {
