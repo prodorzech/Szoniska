@@ -15,8 +15,7 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-bold text-lg mb-3">Szoniska</h3>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Platforma społecznościowa dla osób ze szkoły. Dziel się swoimi historiami, 
-              poznawaj innych i bądź na bieżąco z wydarzeniami.
+              Platforma do wstawiania najgorszych szonów polskich
             </p>
           </div>
 
@@ -79,7 +78,7 @@ export default function Footer() {
             © {currentYear} Szoniska. Wszystkie prawa zastrzeżone.
           </p>
           <p className="text-gray-400 text-sm flex items-center gap-2">
-            Stworzone z <FaHeart className="text-red-500" /> dla społeczności
+            Stworzone przez 7Team z <FaHeart className="text-red-500" />
           </p>
         </div>
       </div>

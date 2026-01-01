@@ -196,8 +196,8 @@ export default function RegisterPage() {
               Discord
             </button>
             <button
-              onClick={() => signIn('google', { callbackUrl: '/' })}
-              className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-900 font-semibold py-3 rounded-lg transition-colors"
+              disabled
+              className="flex items-center justify-center gap-2 bg-gray-600 text-gray-400 font-semibold py-3 rounded-lg cursor-not-allowed opacity-50"
             >
               <FaGoogle size={18} />
               Google
