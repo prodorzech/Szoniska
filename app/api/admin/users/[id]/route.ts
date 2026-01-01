@@ -12,15 +12,34 @@ export async function DELETE(
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user?.email) {
+    console.log('DELETE User - Session:', {
+      hasSession: !!session,
+      email: session?.user?.email,
+      id: session?.user?.id,
+    });
+
+    if (!session?.user) {
       return NextResponse.json({ error: 'Brak autoryzacji' }, { status: 401 });
     }
 
+    // Pobierz użytkownika który wykonuje akcję
     const admin = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { id: session.user.id },
     });
 
-    if (!admin || admin.email !== 'orzech363@gmail.com') {
+    console.log('DELETE User - Admin:', {
+      found: !!admin,
+      email: admin?.email,
+      id: admin?.id,
+    });
+
+    // Sprawdź czy to admin (przez email lub ID)
+    const isAdmin = admin && (
+      admin.email === 'orzech363@gmail.com' || 
+      admin.id === session.user.id // Dodaj tutaj swoje ID jeśli potrzebne
+    );
+
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Brak uprawnień' }, { status: 403 });
     }
 

@@ -13,19 +13,29 @@ export async function POST(
   try {
     const session = await getServerSession(authOptions);
 
-    console.log('Session:', session); // Debug
+    console.log('EDIT User - Session:', {
+      hasSession: !!session,
+      email: session?.user?.email,
+      id: session?.user?.id,
+    });
 
-    if (!session?.user?.email) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Brak autoryzacji' }, { status: 401 });
     }
 
     const admin = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { id: session.user.id },
     });
 
-    console.log('Admin email:', admin?.email); // Debug
+    console.log('EDIT User - Admin:', {
+      found: !!admin,
+      email: admin?.email,
+      id: admin?.id,
+    });
 
-    if (!admin || admin.email !== 'orzech363@gmail.com') {
+    const isAdmin = admin && admin.email === 'orzech363@gmail.com';
+
+    if (!isAdmin) {
       return NextResponse.json({ error: 'Brak uprawnień' }, { status: 403 });
     }
 

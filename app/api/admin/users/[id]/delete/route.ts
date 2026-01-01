@@ -12,17 +12,16 @@ export async function DELETE(
 ) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Check if user is admin
     const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
+      where: { id: session.user.id },
     });
 
-    const adminDiscordIds = process.env.ADMIN_DISCORD_IDS?.split(',') || [];
-    const isAdmin = user?.discordId && adminDiscordIds.includes(user.discordId);
+    const isAdmin = user && user.email === 'orzech363@gmail.com';
 
     if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden - Admin only' }, { status: 403 });
