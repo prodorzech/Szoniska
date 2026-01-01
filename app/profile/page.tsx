@@ -11,11 +11,13 @@ import AdminPanel from '@/components/profile/AdminPanel';
 import UserWarnings from '@/components/profile/UserWarnings';
 import SecuritySettings from '@/components/profile/SecuritySettings';
 import UpdatesList from '@/components/profile/UpdatesList';
+import EditProfileModal from '@/components/profile/EditProfileModal';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'info' | 'posts' | 'warnings' | 'security' | 'updates' | 'admin'>('info');
+  const [showEditModal, setShowEditModal] = useState(false);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -67,10 +69,14 @@ export default function ProfilePage() {
               <img
                 src={session.user.image}
                 alt={session.user.name || 'User'}
-                className="w-20 h-20 rounded-full border-4 border-purple-500"
+                onClick={() => setShowEditModal(true)}
+                className="w-20 h-20 rounded-full border-4 border-purple-500 cursor-pointer hover:opacity-80 transition-opacity"
               />
             ) : (
-              <div className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-3xl border-4 border-purple-500">
+              <div 
+                onClick={() => setShowEditModal(true)}
+                className="w-20 h-20 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-3xl border-4 border-purple-500 cursor-pointer hover:opacity-80 transition-opacity"
+              >
                 {session.user.name?.charAt(0).toUpperCase()}
               </div>
             )}
@@ -116,6 +122,17 @@ export default function ProfilePage() {
           {activeTab === 'admin' && session.user.isAdmin && <AdminPanel />}
         </div>
       </motion.div>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <EditProfileModal
+          onClose={() => setShowEditModal(false)}
+          onSuccess={() => {
+            // Modal will update the session automatically
+            console.log('Profile updated successfully');
+          }}
+        />
+      )}
     </div>
   );
 }
