@@ -258,14 +258,6 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
       setLoading(false);
     }
   };
-        onClose();
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <AnimatePresence>
