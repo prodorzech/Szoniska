@@ -65,7 +65,7 @@ export default function KontaktPage() {
                 Nasz zespół moderatorów jest tam dostępny i chętnie pomoże!
               </p>
               <a
-                href="https://discord.gg/your-server"
+                href="https://discord.gg/szoniska"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"

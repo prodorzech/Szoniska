@@ -57,7 +57,7 @@ export default function Footer() {
               <motion.a
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                href="https://discord.gg/your-server"
+                href="https://discord.gg/szoniska"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-purple-600 hover:bg-purple-700 rounded-full flex items-center justify-center text-white transition-colors"
