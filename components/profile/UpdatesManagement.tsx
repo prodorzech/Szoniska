@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { FaThumbtack } from 'react-icons/fa';
 
 interface Update {
   id: string;
@@ -178,15 +179,20 @@ export default function UpdatesManagement() {
               />
             </div>
             <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="isPinned"
-                checked={formData.isPinned}
-                onChange={(e) => setFormData({ ...formData, isPinned: e.target.checked })}
-                className="w-4 h-4 rounded bg-gray-700 border-gray-600"
-              />
-              <label htmlFor="isPinned" className="ml-2 text-sm">
-                Przypnij aktualizację
+              <label htmlFor="isPinned" className="flex items-center gap-3 cursor-pointer">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    id="isPinned"
+                    checked={formData.isPinned}
+                    onChange={(e) => setFormData({ ...formData, isPinned: e.target.checked })}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-yellow-600"></div>
+                </div>
+                <span className="text-sm font-medium">
+                  Przypnij aktualizację
+                </span>
               </label>
             </div>
             <button
@@ -218,7 +224,10 @@ export default function UpdatesManagement() {
                   <div className="flex items-center gap-2">
                     {update.title}
                     {update.isPinned && (
-                      <span className="px-2 py-1 bg-yellow-600 text-xs rounded">📌 Przypięte</span>
+                      <span className="px-2 py-1 bg-yellow-600 text-xs rounded flex items-center gap-1">
+                        <FaThumbtack className="text-xs" />
+                        Przypięte
+                      </span>
                     )}
                   </div>
                 </td>

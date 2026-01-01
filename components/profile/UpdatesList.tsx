@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { FaThumbtack, FaCalendarAlt, FaIdCard } from 'react-icons/fa';
 
 interface Update {
   id: string;
@@ -49,7 +50,8 @@ export default function UpdatesList() {
       {pinnedUpdates.length > 0 && (
         <div className="mb-8">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-            📌 Przypięte Aktualizacje
+            <FaThumbtack className="text-yellow-500" />
+            Przypięte Aktualizacje
           </h2>
           <div className="space-y-4">
             {pinnedUpdates.map((update) => (
@@ -95,7 +97,10 @@ function UpdateCard({ update, isPinned = false }: { update: Update; isPinned?: b
               v{update.version}
             </span>
             {isPinned && (
-              <span className="px-2 py-1 bg-yellow-600 text-xs rounded">📌 Przypięte</span>
+              <span className="px-2 py-1 bg-yellow-600 text-xs rounded flex items-center gap-1">
+                <FaThumbtack className="text-xs" />
+                Przypięte
+              </span>
             )}
           </div>
           <h3 className="text-xl font-semibold">{update.title}</h3>
@@ -120,14 +125,20 @@ function UpdateCard({ update, isPinned = false }: { update: Update; isPinned?: b
       )}
 
       <div className="flex items-center gap-4 text-sm text-gray-400 border-t border-gray-700 pt-3">
-        <span>📅 {new Date(update.createdAt).toLocaleDateString('pl-PL', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })}</span>
-        <span>🆔 {update.id}</span>
+        <span className="flex items-center gap-2">
+          <FaCalendarAlt className="text-purple-400" />
+          {new Date(update.createdAt).toLocaleDateString('pl-PL', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}
+        </span>
+        <span className="flex items-center gap-2">
+          <FaIdCard className="text-blue-400" />
+          {update.id}
+        </span>
       </div>
     </div>
   );
