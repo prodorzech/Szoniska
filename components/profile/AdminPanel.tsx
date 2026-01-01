@@ -3,14 +3,13 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaUsers, FaCheckCircle, FaComments, FaBullhorn } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
 import VerificationPanel from './VerificationPanel';
 import UsersManagement from './UsersManagement';
 import ChatManagement from '../admin/ChatManagement';
+import UpdatesManagement from './UpdatesManagement';
 
 export default function AdminPanel() {
-  const [activeTab, setActiveTab] = useState<'verification' | 'users' | 'chat'>('verification');
-  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'verification' | 'users' | 'chat' | 'updates'>('verification');
 
   return (
     <div>
@@ -57,8 +56,12 @@ export default function AdminPanel() {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => router.push('/admin/updates')}
-          className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-lg font-semibold transition-all bg-gray-800/50 text-gray-400 hover:text-white"
+          onClick={() => setActiveTab('updates')}
+          className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-lg font-semibold transition-all ${
+            activeTab === 'updates'
+              ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/50'
+              : 'bg-gray-800/50 text-gray-400 hover:text-white'
+          }`}
         >
           <FaBullhorn size={20} />
           Aktualizacje
@@ -68,6 +71,7 @@ export default function AdminPanel() {
       {activeTab === 'verification' && <VerificationPanel />}
       {activeTab === 'users' && <UsersManagement />}
       {activeTab === 'chat' && <ChatManagement />}
+      {activeTab === 'updates' && <UpdatesManagement />}
     </div>
   );
 }
