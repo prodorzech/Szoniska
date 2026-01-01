@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { FaKey, FaLock } from 'react-icons/fa';
 
 export default function ResetPasswordPage({ params }: { params: { token: string } }) {
   const [password, setPassword] = useState('');
@@ -65,8 +66,13 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl border border-purple-500/20 p-8">
           {/* Header */}
           <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="bg-purple-500/20 p-4 rounded-full">
+                <FaKey className="text-purple-400 text-3xl" />
+              </div>
+            </div>
             <h1 className="text-3xl font-bold text-white mb-2">
-              🔑 Nowe hasło
+              Nowe hasło
             </h1>
             <p className="text-gray-400 text-sm">
               Wprowadź swoje nowe hasło
@@ -164,7 +170,9 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
                   Resetowanie...
                 </span>
               ) : (
-                '🔐 Zresetuj hasło'
+                <span className="flex items-center justify-center gap-2">
+                  <FaLock /> Zresetuj hasło
+                </span>
               )}
             </button>
           </form>

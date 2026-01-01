@@ -64,7 +64,7 @@ export async function sendVerificationEmail(email: string, token: string, name?:
                     <tr>
                       <td align="center">
                         <a href="${verificationUrl}" style="display: inline-block; padding: 16px 48px; background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4); transition: all 0.3s;">
-                          ✨ Potwierdź email
+                          Potwierdź email
                         </a>
                       </td>
                     </tr>
@@ -79,7 +79,7 @@ export async function sendVerificationEmail(email: string, token: string, name?:
                     <tr>
                       <td style="padding: 20px; background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; border-radius: 8px;">
                         <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.6; margin: 0;">
-                          ⚠️ <strong>Uwaga:</strong> Ten link wygasa za <strong>24 godziny</strong>. 
+                          <strong>Uwaga:</strong> Ten link wygasa za <strong>24 godziny</strong>. 
                           Jeśli nie weryfikowałeś tego konta, zignoruj tę wiadomość.
                         </p>
                       </td>
@@ -143,7 +143,7 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
               <tr>
                 <td style="padding: 50px 40px;">
                   <h2 style="color: #ffffff; font-size: 24px; margin: 0 0 20px 0; font-weight: 600;">
-                    ${name ? `Cześć, ${name}! 🔒` : 'Reset hasła 🔒'}
+                    ${name ? `Cześć, ${name}!` : 'Reset hasła'}
                   </h2>
                   
                   <p style="color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
@@ -155,7 +155,7 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
                     <tr>
                       <td align="center">
                         <a href="${resetUrl}" style="display: inline-block; padding: 16px 48px; background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);">
-                          🔑 Zresetuj hasło
+                          Zresetuj hasło
                         </a>
                       </td>
                     </tr>
@@ -172,7 +172,7 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
                     <tr>
                       <td style="padding: 20px; background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; border-radius: 8px;">
                         <p style="color: rgba(255,255,255,0.85); font-size: 14px; line-height: 1.6; margin: 0;">
-                          ⚠️ Ten link wygasa za <strong>1 godzinę</strong>. 
+                          <strong>Uwaga:</strong> Ten link wygasa za <strong>1 godzinę</strong>. 
                           Jeśli nie prosiłeś o reset hasła, zignoruj tę wiadomość.
                         </p>
                       </td>

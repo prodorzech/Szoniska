@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { FaLock, FaEnvelope } from 'react-icons/fa';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -57,8 +58,13 @@ export default function ForgotPasswordPage() {
         <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-2xl border border-purple-500/20 p-8">
           {/* Header */}
           <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <div className="bg-purple-500/20 p-4 rounded-full">
+                <FaLock className="text-purple-400 text-3xl" />
+              </div>
+            </div>
             <h1 className="text-3xl font-bold text-white mb-2">
-              🔒 Zresetuj hasło
+              Zresetuj hasło
             </h1>
             <p className="text-gray-400 text-sm">
               Wpisz swój adres email, a wyślemy Ci link do resetowania hasła
@@ -108,7 +114,9 @@ export default function ForgotPasswordPage() {
                   Wysyłanie...
                 </span>
               ) : (
-                '📧 Wyślij link resetujący'
+                <span className="flex items-center justify-center gap-2">
+                  <FaEnvelope /> Wyślij link resetujący
+                </span>
               )}
             </button>
           </form>
