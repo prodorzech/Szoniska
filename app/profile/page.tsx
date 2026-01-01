@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaUser, FaClipboardList, FaCog, FaShieldAlt, FaExclamationTriangle, FaLock } from 'react-icons/fa';
+import { FaUser, FaClipboardList, FaCog, FaShieldAlt, FaExclamationTriangle, FaLock, FaBullhorn } from 'react-icons/fa';
 import ProfileInfo from '@/components/profile/ProfileInfo';
 import UserPosts from '@/components/profile/UserPosts';
 import AdminPanel from '@/components/profile/AdminPanel';
@@ -14,7 +14,7 @@ import SecuritySettings from '@/components/profile/SecuritySettings';
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'info' | 'posts' | 'warnings' | 'security' | 'admin'>('info');
+  const [activeTab, setActiveTab] = useState<'info' | 'posts' | 'warnings' | 'security' | 'updates' | 'admin'>('info');
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -38,13 +38,14 @@ export default function ProfilePage() {
     return null;
   }
 
-  type TabType = 'info' | 'posts' | 'warnings' | 'security' | 'admin';
+  type TabType = 'info' | 'posts' | 'warnings' | 'security' | 'updates' | 'admin';
 
   const tabs: Array<{ id: TabType; label: string; icon: any }> = [
     { id: 'info', label: 'Profil', icon: FaUser },
     { id: 'posts', label: 'Posty', icon: FaClipboardList },
     { id: 'warnings', label: 'Ostrzeżenia', icon: FaExclamationTriangle },
     { id: 'security', label: 'Bezpieczeństwo', icon: FaLock },
+    { id: 'updates', label: 'Aktualizacje', icon: FaBullhorn },
   ];
 
   if (session.user.isAdmin) {
@@ -110,6 +111,14 @@ export default function ProfilePage() {
           {activeTab === 'posts' && <UserPosts />}
           {activeTab === 'warnings' && <UserWarnings />}
           {activeTab === 'security' && <SecuritySettings />}
+          {activeTab === 'updates' && (
+            <div>
+              <iframe
+                src="/dashboard/updates"
+                className="w-full h-[600px] border-0 rounded-lg"
+              />
+            </div>
+          )}
           {activeTab === 'admin' && session.user.isAdmin && <AdminPanel />}
         </div>
       </motion.div>

@@ -143,3 +143,14 @@ model TwoFactorLogin {
   expires   DateTime
   createdAt DateTime @default(now())
 }
+
+model Update {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  version   String
+  title     String
+  content   String
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authorId  String   @db.ObjectId
+}
