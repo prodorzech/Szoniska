@@ -13,10 +13,16 @@ export async function GET(
     const post = await prisma.post.findUnique({
       where: { id: params.id },
       include: {
-        user: {
+        author: {
           select: {
+            id: true,
             name: true,
             image: true,
+          },
+        },
+        postWarnings: {
+          orderBy: {
+            createdAt: 'desc',
           },
         },
       },
