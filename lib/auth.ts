@@ -191,8 +191,9 @@ export const authOptions: NextAuthOptions = {
           const adminIds = process.env.ADMIN_DISCORD_IDS?.split(',') || [];
           session.user.isAdmin = user.discordId ? adminIds.includes(user.discordId) : false;
           
-          // Update name and image from database
+          // Update name, email and image from database
           session.user.name = user.name;
+          session.user.email = user.email || '';
           session.user.image = user.image;
         }
       }

@@ -36,6 +36,9 @@ interface UserDetailModalProps {
 export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailModalProps) {
   const [loading, setLoading] = useState(false);
   const [warnings, setWarnings] = useState<Warning[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [showPosts, setShowPosts] = useState(false);
+  const [showWarnings, setShowWarnings] = useState(false);
   const [newWarning, setNewWarning] = useState('');
   const [discordLinkId, setDiscordLinkId] = useState('');
   const [authLink, setAuthLink] = useState('');
@@ -53,6 +56,7 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
 
   useEffect(() => {
     fetchWarnings();
+    fetchPosts();
   }, []);
 
   const fetchWarnings = async () => {
@@ -64,6 +68,18 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
       }
     } catch (error) {
       console.error('Error fetching warnings:', error);
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const res = await fetch(`/api/admin/users/${user.id}/posts`);
+      if (res.ok) {
+        const data = await res.json();
+        setPosts(data);
+      }
+    } catch (error) {
+      console.error('Error fetching posts:', error);
     }
   };
 
@@ -254,6 +270,64 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
       }
     } catch (error) {
       setEditMessage({ type: 'error', text: 'Wystąpił błąd połączenia' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteWarning = async (warningId: string) => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/warnings/${warningId}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        fetchWarnings();
+        onUpdate();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePost = async (postId: string) => {
+    if (!confirm('Czy na pewno chcesz usunąć ten post?')) return;
+    
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/posts/${postId}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        fetchPosts();
+        onUpdate();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddPostWarning = async (postId: string) => {
+    const message = prompt('Podaj treść ostrzeżenia dla tego posta:');
+    if (!message) return;
+
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/admin/posts/${postId}/warn`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message }),
+      });
+      if (res.ok) {
+        fetchPosts();
+        alert('Dodano ostrzeżenie do posta');
+      }
+    } catch (error) {
+      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
@@ -562,54 +636,132 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
             </div>
           )}
 
-          {/* Warnings Section */}
+          {/* Posts Section */}
           <div className="bg-gray-800/30 rounded-lg p-4 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
-              <FaExclamationTriangle className="text-yellow-500" /> Ostrzeżenia ({warnings.length})
-            </h3>
-            
-            <div className="flex gap-2 mb-4">
-              <input
-                type="text"
-                value={newWarning}
-                onChange={(e) => setNewWarning(e.target.value)}
-                placeholder="Dodaj nowe ostrzeżenie..."
-                className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:border-purple-500 focus:outline-none"
-                onKeyPress={(e) => e.key === 'Enter' && handleAddWarning()}
-              />
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleAddWarning}
-                disabled={loading || !newWarning.trim()}
-                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 text-white font-semibold rounded-lg transition-colors"
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <FaNewspaper className="text-blue-500" /> Posty użytkownika ({posts.length})
+              </h3>
+              <button
+                onClick={() => setShowPosts(!showPosts)}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors"
               >
-                Dodaj
-              </motion.button>
+                {showPosts ? 'Ukryj' : 'Pokaż'}
+              </button>
             </div>
 
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-              {warnings.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">Brak ostrzeżeń</p>
-              ) : (
-                warnings.map((warning) => (
-                  <div key={warning.id} className="bg-gray-900/50 rounded-lg p-3 flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="text-white">{warning.message}</p>
-                      <p className="text-gray-500 text-xs mt-1">
-                        {new Date(warning.createdAt).toLocaleString('pl-PL')}
-                      </p>
+            {showPosts && (
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {posts.length === 0 ? (
+                  <p className="text-gray-500 text-center py-4">Brak postów</p>
+                ) : (
+                  posts.map((post) => (
+                    <div key={post.id} className="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h4 className="text-white font-semibold">{post.title}</h4>
+                          <p className="text-gray-400 text-sm line-clamp-2">{post.content}</p>
+                          <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                            <span>{new Date(post.createdAt).toLocaleString('pl-PL')}</span>
+                            {post._count?.postWarnings > 0 && (
+                              <span className="text-yellow-400">
+                                <FaExclamationTriangle className="inline mr-1" />
+                                {post._count.postWarnings} ostrzeżeń
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <button
+                          onClick={() => window.open(`/posts/${post.id}`, '_blank')}
+                          className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition-colors"
+                        >
+                          <FaEye className="inline mr-1" /> Zobacz
+                        </button>
+                        <button
+                          onClick={() => handleAddPostWarning(post.id)}
+                          disabled={loading}
+                          className="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded transition-colors"
+                        >
+                          <FaExclamationTriangle className="inline mr-1" /> Ostrzeż
+                        </button>
+                        <button
+                          onClick={() => handleDeletePost(post.id)}
+                          disabled={loading}
+                          className="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded transition-colors"
+                        >
+                          <FaTrash className="inline mr-1" /> Usuń
+                        </button>
+                      </div>
                     </div>
-                    <button
-                      onClick={() => handleDeleteWarning(warning.id)}
-                      className="ml-3 p-2 hover:bg-red-600/20 rounded transition-colors"
-                    >
-                      <FaTrash className="text-red-400" size={14} />
-                    </button>
-                  </div>
-                ))
-              )}
+                  ))
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Warnings Management Section */}
+          <div className="bg-gray-800/30 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <FaExclamationTriangle className="text-yellow-500" /> Zarządzanie ostrzeżeniami ({warnings.length})
+              </h3>
+              <button
+                onClick={() => setShowWarnings(!showWarnings)}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded-lg transition-colors"
+              >
+                {showWarnings ? 'Ukryj' : 'Pokaż'}
+              </button>
             </div>
+
+            {showWarnings && (
+              <>
+                <div className="flex gap-2 mb-4">
+                  <input
+                    type="text"
+                    value={newWarning}
+                    onChange={(e) => setNewWarning(e.target.value)}
+                    placeholder="Dodaj nowe ostrzeżenie..."
+                    className="flex-1 bg-gray-800 text-white px-4 py-2 rounded-lg border border-purple-500/30 focus:border-purple-500 focus:outline-none"
+                    onKeyPress={(e) => e.key === 'Enter' && handleAddWarning()}
+                  />
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={handleAddWarning}
+                    disabled={loading || !newWarning.trim()}
+                    className="px-6 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 text-white font-semibold rounded-lg transition-colors"
+                  >
+                    Dodaj
+                  </motion.button>
+                </div>
+
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {warnings.length === 0 ? (
+                    <p className="text-gray-500 text-center py-4">Brak ostrzeżeń</p>
+                  ) : (
+                    warnings.map((warning) => (
+                      <div key={warning.id} className="bg-gray-900/50 rounded-lg p-3 flex items-start justify-between">
+                        <div className="flex-1">
+                          <p className="text-white">{warning.message}</p>
+                          <p className="text-gray-500 text-xs mt-1">
+                            {new Date(warning.createdAt).toLocaleString('pl-PL')}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteWarning(warning.id)}
+                          disabled={loading}
+                          className="ml-3 p-2 hover:bg-red-600/20 rounded transition-colors"
+                        >
+                          <FaTrash className="text-red-400" size={14} />
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
+            )}
           </div>
 
           {/* Confirmation Dialogs */}
