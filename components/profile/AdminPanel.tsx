@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaUsers, FaCheckCircle, FaComments, FaBullhorn } from 'react-icons/fa';
 import VerificationPanel from './VerificationPanel';
-import UsersManagement from './UsersManagement';
+import UsersManagementNew from './UsersManagementNew';
 import ChatManagement from '../admin/ChatManagement';
 import UpdatesManagement from './UpdatesManagement';
 
@@ -69,7 +69,7 @@ export default function AdminPanel() {
       </div>
 
       {activeTab === 'verification' && <VerificationPanel />}
-      {activeTab === 'users' && <UsersManagement />}
+      {activeTab === 'users' && <UsersManagementNew />}
       {activeTab === 'chat' && <ChatManagement />}
       {activeTab === 'updates' && <UpdatesManagement />}
     </div>
