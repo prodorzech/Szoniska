@@ -182,6 +182,10 @@ export const authOptions: NextAuthOptions = {
         if (user) {
           const adminIds = process.env.ADMIN_DISCORD_IDS?.split(',') || [];
           session.user.isAdmin = user.discordId ? adminIds.includes(user.discordId) : false;
+          
+          // Update name and image from database
+          session.user.name = user.name;
+          session.user.image = user.image;
         }
       }
       return session;

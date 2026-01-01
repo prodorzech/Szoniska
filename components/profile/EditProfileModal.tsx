@@ -88,11 +88,18 @@ export default function EditProfileModal({ onClose, onSuccess }: EditProfileModa
           const data = await avatarRes.json();
           throw new Error(data.error || 'Failed to upload avatar');
         }
+
+        const avatarData = await avatarRes.json();
+        console.log('Avatar uploaded:', avatarData);
       }
 
       // Update session and reload page
       await update();
-      window.location.reload();
+      
+      // Small delay to ensure session update completes
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił błąd');
       setShowConfirmation(false);
