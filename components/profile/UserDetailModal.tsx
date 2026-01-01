@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaBan, FaExclamationTriangle, FaLock, FaUnlock, FaTrash, FaEdit, FaEye, FaNewspaper, FaDiscord } from 'react-icons/fa';
+import EditPostModal from './EditPostModal';
 
 interface User {
   id: string;
@@ -53,6 +54,7 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
     password: '',
   });
   const [editMessage, setEditMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [editingPost, setEditingPost] = useState<any>(null);
 
   useEffect(() => {
     fetchWarnings();
@@ -663,6 +665,12 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
                           <FaEye className="inline mr-1" /> Zobacz
                         </button>
                         <button
+                          onClick={() => setEditingPost(post)}
+                          className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm rounded transition-colors"
+                        >
+                          <FaEdit className="inline mr-1" /> Edytuj
+                        </button>
+                        <button
                           onClick={() => handleAddPostWarning(post.id)}
                           disabled={loading}
                           className="px-3 py-1 bg-yellow-600 hover:bg-yellow-700 text-white text-sm rounded transition-colors"
@@ -827,6 +835,17 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
           )}
         </motion.div>
       </motion.div>
+
+      {editingPost && (
+        <EditPostModal
+          post={editingPost}
+          onClose={() => setEditingPost(null)}
+          onSuccess={() => {
+            setEditingPost(null);
+            fetchPosts();
+          }}
+        />
+      )}
     </AnimatePresence>
   );
 }
