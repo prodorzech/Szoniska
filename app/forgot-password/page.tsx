@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
         
         // Redirect to login after 5 seconds
         setTimeout(() => {
-          router.push('/auth/signin');
+          router.push('/login');
         }, 5000);
       } else {
         setMessage({ type: 'error', text: data.error || 'Wystąpił błąd' });
@@ -116,7 +116,7 @@ export default function ForgotPasswordPage() {
           {/* Back to login */}
           <div className="mt-6 text-center">
             <Link 
-              href="/auth/signin"
+              href="/login"
               className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
             >
               ← Powrót do logowania

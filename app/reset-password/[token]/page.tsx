@@ -47,7 +47,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
         
         // Redirect to login with email pre-filled
         setTimeout(() => {
-          router.push(`/auth/signin?email=${encodeURIComponent(data.email)}`);
+          router.push(`/login?email=${encodeURIComponent(data.email)}`);
         }, 2000);
       } else {
         setMessage({ type: 'error', text: data.error || 'Wystąpił błąd' });
@@ -172,7 +172,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
           {/* Back to login */}
           <div className="mt-6 text-center">
             <Link 
-              href="/auth/signin"
+              href="/login"
               className="text-sm text-purple-400 hover:text-purple-300 transition-colors"
             >
               ← Powrót do logowania
