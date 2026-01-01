@@ -5,29 +5,24 @@ import { prisma } from '@/lib/prisma';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(
+// Delete maintenance
+export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user?.isAdmin) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
-    const { restrict, reason } = body;
-
-    const user = await prisma.user.update({
+    await prisma.systemMaintenance.delete({
       where: { id: params.id },
-      data: {
-        isRestricted: restrict,
-        restrictionReason: restrict ? reason : null,
-      },
     });
 
-    return NextResponse.json(user);
+    return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
+    console.error('Error deleting maintenance:', error);
+    return NextResponse.json({ error: 'Failed to delete maintenance' }, { status: 500 });
   }
 }

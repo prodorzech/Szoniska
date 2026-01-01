@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaUser, FaClipboardList, FaCog, FaShieldAlt, FaExclamationTriangle, FaLock, FaBullhorn } from 'react-icons/fa';
+import { FaUser, FaClipboardList, FaCog, FaShieldAlt, FaExclamationTriangle, FaLock, FaBullhorn, FaTools } from 'react-icons/fa';
 import ProfileInfo from '@/components/profile/ProfileInfo';
 import UserPosts from '@/components/profile/UserPosts';
 import AdminPanel from '@/components/profile/AdminPanel';
@@ -18,6 +18,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'info' | 'posts' | 'warnings' | 'security' | 'updates' | 'admin'>('info');
   const [showEditModal, setShowEditModal] = useState(false);
+  const [maintenance, setMaintenance] = useState<any>(null);
+  const [loadingMaintenance, setLoadingMaintenance] = useState(true);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -25,7 +27,27 @@ export default function ProfilePage() {
     }
   }, [status, router]);
 
-  if (status === 'loading') {
+  useEffect(() => {
+    checkMaintenance();
+  }, []);
+
+  const checkMaintenance = async () => {
+    try {
+      const res = await fetch('/api/maintenance/profile');
+      if (res.ok) {
+        const data = await res.json();
+        if (data.isMaintenance) {
+          setMaintenance(data);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking maintenance:', error);
+    } finally {
+      setLoadingMaintenance(false);
+    }
+  };
+
+  if (status === 'loading' || loadingMaintenance) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <motion.div
@@ -39,6 +61,71 @@ export default function ProfilePage() {
 
   if (!session) {
     return null;
+  }
+
+  // Show maintenance screen (except for admins)
+  if (maintenance && !session.user.isAdmin) {
+    const timeRemaining = () => {
+      const now = new Date();
+      const end = new Date(maintenance.endTime);
+      const diff = end.getTime() - now.getTime();
+
+      if (diff <= 0) return 'niedługo';
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+      if (hours > 24) {
+        const days = Math.floor(hours / 24);
+        return `${days} dni`;
+      }
+      if (hours > 0) {
+        return `${hours} godzin`;
+      }
+      return `${minutes} minut`;
+    };
+
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center min-h-[60vh]">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-gradient-to-br from-orange-900/30 to-orange-800/20 border-2 border-orange-500/50 rounded-2xl p-8 max-w-2xl text-center"
+          >
+            <div className="bg-orange-600/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <FaTools className="text-orange-400 text-4xl" />
+            </div>
+            
+            <h1 className="text-3xl font-bold text-white mb-4">
+              Dostęp do profilu został tymczasowo ograniczony
+            </h1>
+            
+            <div className="bg-black/30 rounded-lg p-6 mb-6">
+              <p className="text-xl text-orange-300 mb-2 font-semibold">Powód:</p>
+              <p className="text-white text-lg">{maintenance.reason}</p>
+            </div>
+
+            <p className="text-gray-300 mb-4">
+              Profile użytkowników będą dostępne ponownie za: <span className="text-orange-400 font-bold text-xl">{timeRemaining()}</span>
+            </p>
+
+            <p className="text-gray-500 text-sm">
+              Przepraszamy za niedogodności. Prace są prowadzone w celu poprawy jakości serwisu.
+            </p>
+
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => router.push('/')}
+              className="mt-6 px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
+            >
+              Wróć na stronę główną
+            </motion.button>
+          </motion.div>
+        </div>
+      </div>
+    );
   }
 
   type TabType = 'info' | 'posts' | 'warnings' | 'security' | 'updates' | 'admin';

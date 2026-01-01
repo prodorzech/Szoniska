@@ -13,6 +13,7 @@ interface User {
   discordUsername?: string;
   isBlocked: boolean;
   isRestricted: boolean;
+  restrictionReason?: string;
   createdAt: string;
   _count: {
     posts: number;
@@ -40,6 +41,8 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
   const [authLink, setAuthLink] = useState('');
   const [showConfirmBlock, setShowConfirmBlock] = useState(false);
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [showRestrictForm, setShowRestrictForm] = useState(false);
+  const [restrictionReason, setRestrictionReason] = useState(user.restrictionReason || '');
 
   useEffect(() => {
     fetchWarnings();
@@ -77,14 +80,41 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
   };
 
   const handleRestrict = async () => {
+    if (user.isRestricted) {
+      // Odblokuj bez pytania o powód
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/admin/users/${user.id}/restrict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ restrict: false, reason: null }),
+        });
+        if (res.ok) {
+          setShowRestrictForm(false);
+          onUpdate();
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Pokaż formularz z powodem
+      setShowRestrictForm(true);
+    }
+  };
+
+  const handleRestrictWithReason = async () => {
+    if (!restrictionReason.trim()) return;
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/users/${user.id}/restrict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ restrict: !user.isRestricted }),
+        body: JSON.stringify({ restrict: true, reason: restrictionReason }),
       });
       if (res.ok) {
+        setShowRestrictForm(false);
         onUpdate();
       }
     } catch (error) {
@@ -232,7 +262,7 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
           </div>
 
           {/* Status Badges */}
-          <div className="flex gap-2 mb-6">
+          <div className="flex flex-wrap gap-2 mb-6">
             {user.isBlocked && (
               <span className="px-3 py-1 bg-red-600/20 border border-red-500/30 rounded-full text-red-400 text-sm">
                 Zablokowany
@@ -249,6 +279,16 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
               </span>
             )}
           </div>
+
+          {/* Restriction Reason */}
+          {user.isRestricted && user.restrictionReason && (
+            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mb-6">
+              <h3 className="text-lg font-semibold text-yellow-400 mb-2 flex items-center gap-2">
+                <FaLock /> Powód ograniczenia postów
+              </h3>
+              <p className="text-white">{user.restrictionReason}</p>
+            </div>
+          )}
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -404,6 +444,37 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
           </div>
 
           {/* Confirmation Dialogs */}
+          {showRestrictForm && !user.isRestricted && (
+            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mb-4">
+              <h3 className="text-yellow-400 font-semibold mb-3">Ogranicz możliwość dodawania postów</h3>
+              <p className="text-gray-300 text-sm mb-3">
+                Podaj powód ograniczenia (będzie widoczny dla admina):
+              </p>
+              <textarea
+                value={restrictionReason}
+                onChange={(e) => setRestrictionReason(e.target.value)}
+                placeholder="np. Spam, niewłaściwe treści..."
+                rows={3}
+                className="w-full bg-gray-800 text-white px-4 py-3 rounded-lg border border-yellow-500/30 focus:border-yellow-500 focus:outline-none resize-none mb-3"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleRestrictWithReason}
+                  disabled={loading || !restrictionReason.trim()}
+                  className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 disabled:bg-gray-700 text-white rounded-lg font-semibold"
+                >
+                  Ogranicz
+                </button>
+                <button
+                  onClick={() => setShowRestrictForm(false)}
+                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                >
+                  Anuluj
+                </button>
+              </div>
+            </div>
+          )}
+
           {showConfirmBlock && (
             <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4 mb-4">
               <p className="text-yellow-400 mb-3">
