@@ -144,6 +144,23 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Admin maintenance notice */}
+      {maintenance && session.user.isAdmin && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-orange-900/20 border border-orange-500/30 rounded-lg p-4 mb-4"
+        >
+          <div className="flex items-center gap-3">
+            <FaTools className="text-orange-400 text-xl flex-shrink-0" />
+            <div>
+              <p className="text-orange-400 font-semibold">Profil jest w trybie utrzymania technicznego</p>
+              <p className="text-gray-400 text-sm">Jako administrator masz dostęp. Użytkownicy widzą: "{maintenance.reason}"</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

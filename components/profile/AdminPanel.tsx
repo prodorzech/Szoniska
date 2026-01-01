@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { FaUsers, FaCheckCircle, FaComments, FaBullhorn, FaTools } from 'react-icons/fa';
 import VerificationPanel from './VerificationPanel';
 import UsersManagementNew from './UsersManagementNew';
@@ -16,9 +15,7 @@ export default function AdminPanel() {
     <div>
       <div className="overflow-x-auto mb-6">
         <div className="flex gap-4 min-w-max">
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             onClick={() => setActiveTab('verification')}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'verification'
@@ -28,10 +25,8 @@ export default function AdminPanel() {
           >
             <FaCheckCircle size={20} />
             Weryfikowanie
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          </button>
+          <button
             onClick={() => setActiveTab('users')}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'users'
@@ -41,10 +36,8 @@ export default function AdminPanel() {
           >
             <FaUsers size={20} />
             Użytkownicy
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          </button>
+          <button
             onClick={() => setActiveTab('chat')}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'chat'
@@ -54,10 +47,8 @@ export default function AdminPanel() {
           >
             <FaComments size={20} />
             Chat
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          </button>
+          <button
             onClick={() => setActiveTab('updates')}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'updates'
@@ -67,10 +58,8 @@ export default function AdminPanel() {
           >
             <FaBullhorn size={20} />
             Aktualizacje
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          </button>
+          <button
             onClick={() => setActiveTab('technical')}
             className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-lg font-semibold transition-all whitespace-nowrap ${
               activeTab === 'technical'
@@ -80,7 +69,7 @@ export default function AdminPanel() {
           >
             <FaTools size={20} />
             Techniczne
-          </motion.button>
+          </button>
         </div>
       </div>
 
