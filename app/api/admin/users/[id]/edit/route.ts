@@ -35,8 +35,18 @@ export async function POST(
 
     const isAdmin = admin && admin.email === 'orzech363@gmail.com';
 
+    console.log('EDIT User - isAdmin:', isAdmin, 'admin.email:', admin?.email);
+
     if (!isAdmin) {
-      return NextResponse.json({ error: 'Brak uprawnień' }, { status: 403 });
+      return NextResponse.json({ 
+        error: 'Brak uprawnień',
+        debug: {
+          sessionId: session.user?.id,
+          adminFound: !!admin,
+          adminEmail: admin?.email,
+          expectedEmail: 'orzech363@gmail.com',
+        }
+      }, { status: 403 });
     }
 
     const { name, email, password } = await req.json();
