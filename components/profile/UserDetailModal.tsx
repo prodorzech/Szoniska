@@ -43,6 +43,13 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
   const [showRestrictForm, setShowRestrictForm] = useState(false);
   const [restrictionReason, setRestrictionReason] = useState(user.restrictionReason || '');
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    name: user.name,
+    email: user.email || '',
+    password: '',
+  });
+  const [editMessage, setEditMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   useEffect(() => {
     fetchWarnings();
@@ -200,6 +207,66 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
     }
   };
 
+  const handleEditUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setEditMessage(null);
+
+    try {
+      const dataToSend: any = {};
+      
+      if (editFormData.name !== user.name) {
+        dataToSend.name = editFormData.name;
+      }
+      
+      if (editFormData.email !== user.email) {
+        dataToSend.email = editFormData.email;
+      }
+      
+      if (editFormData.password) {
+        dataToSend.password = editFormData.password;
+      }
+
+      if (Object.keys(dataToSend).length === 0) {
+        setEditMessage({ type: 'error', text: 'Brak zmian do zapisania' });
+        setLoading(false);
+        return;
+      }
+
+      const res = await fetch(`/api/admin/users/${user.id}/edit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToSend),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setEditMessage({ type: 'success', text: 'Dane zostały zaktualizowane' });
+        setEditFormData({ ...editFormData, password: '' });
+        onUpdate();
+        setTimeout(() => {
+          setShowEditForm(false);
+          setEditMessage(null);
+        }, 2000);
+      } else {
+        setEditMessage({ type: 'error', text: data.error || 'Wystąpił błąd' });
+      }
+    } catch (error) {
+      setEditMessage({ type: 'error', text: 'Wystąpił błąd połączenia' });
+    } finally {
+      setLoading(false);
+    }
+  };
+        onClose();
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AnimatePresence>
       <motion.div
@@ -291,7 +358,17 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
           )}
 
           {/* Quick Actions */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setShowEditForm(!showEditForm)}
+              className="px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-white transition-colors"
+            >
+              <FaEdit className="inline mr-2" />
+              Edytuj dane
+            </motion.button>
+
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -343,6 +420,106 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
               Usuń
             </motion.button>
           </div>
+
+          {/* Edit Form */}
+          {showEditForm && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="bg-gray-800/50 border border-purple-500/30 rounded-lg p-4 mb-6"
+            >
+              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                <FaEdit /> Edytuj dane użytkownika
+              </h3>
+              
+              {editMessage && (
+                <div className={`mb-4 p-3 rounded-lg ${
+                  editMessage.type === 'success' 
+                    ? 'bg-green-500/10 border border-green-500/30 text-green-400' 
+                    : 'bg-red-500/10 border border-red-500/30 text-red-400'
+                }`}>
+                  {editMessage.text}
+                </div>
+              )}
+
+              <form onSubmit={handleEditUser} className="space-y-4">
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">
+                    Nazwa użytkownika
+                  </label>
+                  <input
+                    type="text"
+                    value={editFormData.name}
+                    onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
+                    className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none"
+                    placeholder="Nazwa użytkownika"
+                    minLength={2}
+                    maxLength={50}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={editFormData.email}
+                    onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
+                    className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none"
+                    placeholder="email@example.com"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-300 text-sm font-semibold mb-2">
+                    Nowe hasło (opcjonalne)
+                  </label>
+                  <input
+                    type="password"
+                    value={editFormData.password}
+                    onChange={(e) => setEditFormData({ ...editFormData, password: e.target.value })}
+                    className="w-full bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:border-purple-500 focus:outline-none"
+                    placeholder="Minimum 6 znaków (zostaw puste aby nie zmieniać)"
+                    minLength={6}
+                  />
+                  <p className="text-gray-500 text-xs mt-1">
+                    Pozostaw puste, jeśli nie chcesz zmieniać hasła
+                  </p>
+                </div>
+
+                <div className="flex gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={loading}
+                    className="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 text-white font-semibold rounded-lg transition-colors"
+                  >
+                    {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={() => {
+                      setShowEditForm(false);
+                      setEditMessage(null);
+                      setEditFormData({
+                        name: user.name,
+                        email: user.email || '',
+                        password: '',
+                      });
+                    }}
+                    className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
+                  >
+                    Anuluj
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          )}
 
           {/* Discord Linking (only for traditional accounts) */}
           {!user.discordId && (
