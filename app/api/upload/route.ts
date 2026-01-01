@@ -14,6 +14,19 @@ cloudinary.config({
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if Cloudinary is configured
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error('Cloudinary credentials missing:', {
+        cloud_name: !!process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: !!process.env.CLOUDINARY_API_KEY,
+        api_secret: !!process.env.CLOUDINARY_API_SECRET,
+      });
+      return NextResponse.json({ 
+        error: 'Server configuration error',
+        details: 'Cloudinary credentials not configured'
+      }, { status: 500 });
+    }
+
     const session = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
