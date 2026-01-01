@@ -3,13 +3,17 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FaArrowLeft, FaUser, FaCalendarAlt, FaExclamationTriangle, FaTrash, FaEdit } from 'react-icons/fa';
+import { FaArrowLeft, FaUser, FaCalendarAlt, FaExclamationTriangle, FaTrash, FaFacebook, FaInstagram, FaTiktok } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
 
 interface Post {
   id: string;
   title: string;
   description: string;
+  images?: string[];
+  facebookUrl?: string;
+  instagramUrl?: string;
+  tiktokUrl?: string;
   createdAt: string;
   user: {
     id: string;
@@ -136,35 +140,129 @@ export default function PostPage() {
           </div>
 
           {/* Content */}
-          <div className="prose prose-invert max-w-none mb-8">
-            <p className="text-gray-300 whitespace-pre-wrap">{post.description}</p>
+          <div className="mb-8">
+            <p className="text-gray-300 whitespace-pre-wrap text-lg">{post.description}</p>
           </div>
+
+          {/* Images Gallery */}
+          {post.images && post.images.length > 0 && (
+            <div className="mb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {post.images.map((image, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="relative rounded-xl overflow-hidden border-2 border-purple-500/30 hover:border-purple-500 transition-colors"
+                  >
+                    <img
+                      src={image}
+                      alt={`${post.title} - zdjęcie ${index + 1}`}
+                      className="w-full h-auto object-cover"
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Social Media Links */}
+          {(post.facebookUrl || post.instagramUrl || post.tiktokUrl) && (
+            <div className="mb-8 p-6 bg-gray-800/50 rounded-xl border border-purple-500/20">
+              <h3 className="text-white font-semibold mb-4 text-lg">Linki do social media</h3>
+              <div className="flex flex-wrap gap-3">
+                {post.facebookUrl && (
+                  <a
+                    href={post.facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition-colors"
+                  >
+                    <FaFacebook size={20} />
+                    Facebook
+                  </a>
+                )}
+                {post.instagramUrl && (
+                  <a
+                    href={post.instagramUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 rounded-lg text-white font-semibold transition-colors"
+                  >
+                    <FaInstagram size={20} />
+                    Instagram
+                  </a>
+                )}
+                {post.tiktokUrl && (
+                  <a
+                    href={post.tiktokUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-gray-900 rounded-lg text-white font-semibold transition-colors border border-white/20"
+                  >
+                    <FaTiktok size={20} />
+                    TikTok
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Warnings */}
           {post.warnings && post.warnings.length > 0 && (
-            <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-6">
-              <h3 className="text-yellow-400 font-semibold mb-4 flex items-center gap-2">
-                <FaExclamationTriangle />
-                Ostrzeżenia administratora ({post.warnings.length})
-              </h3>
+            <div className="bg-gradient-to-r from-yellow-900/30 to-red-900/30 border-2 border-yellow-500/50 rounded-xl p-6 shadow-lg">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="p-3 bg-yellow-500/20 rounded-full">
+                  <FaExclamationTriangle className="text-yellow-400 text-xl" />
+                </div>
+                <div>
+                  <h3 className="text-yellow-400 font-bold text-xl">
+                    Ostrzeżenia Administratora
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    Ten post otrzymał {post.warnings.length} {post.warnings.length === 1 ? 'ostrzeżenie' : 'ostrzeżeń'}
+                  </p>
+                </div>
+              </div>
               <div className="space-y-3">
-                {post.warnings.map((warning) => (
-                  <div key={warning.id} className="bg-gray-800/50 rounded-lg p-4 flex items-start justify-between">
-                    <div className="flex-1">
-                      <p className="text-white">{warning.message}</p>
-                      <p className="text-gray-500 text-xs mt-1">
-                        {new Date(warning.createdAt).toLocaleString('pl-PL')}
-                      </p>
+                {post.warnings.map((warning, index) => (
+                  <motion.div
+                    key={warning.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-gray-900/70 backdrop-blur-sm rounded-lg p-4 border border-yellow-500/30 hover:border-yellow-500/50 transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="px-2 py-1 bg-yellow-500/20 rounded text-yellow-400 text-xs font-semibold">
+                            Ostrzeżenie #{index + 1}
+                          </span>
+                          <span className="text-gray-500 text-xs">
+                            {new Date(warning.createdAt).toLocaleDateString('pl-PL', {
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </span>
+                        </div>
+                        <p className="text-white text-base leading-relaxed">{warning.message}</p>
+                      </div>
+                      {session?.user && (
+                        <button
+                          onClick={() => handleDeleteWarning(warning.id)}
+                          className="ml-4 p-2 hover:bg-red-600/30 rounded-lg transition-colors group"
+                          title="Usuń ostrzeżenie"
+                        >
+                          <FaTrash className="text-red-400 group-hover:text-red-300" size={16} />
+                        </button>
+                      )}
                     </div>
-                    {session?.user && (
-                      <button
-                        onClick={() => handleDeleteWarning(warning.id)}
-                        className="ml-3 p-2 hover:bg-red-600/20 rounded transition-colors"
-                      >
-                        <FaTrash className="text-red-400" size={14} />
-                      </button>
-                    )}
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
