@@ -7,6 +7,9 @@ import Footer from '@/components/Footer';
 export const metadata: Metadata = {
   title: 'Szoniska',
   description: 'Dziel się szonami z innymi!',
+  icons: {
+    icon: '/logo.png',
+  },
 };
 
 export default function RootLayout({
