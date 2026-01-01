@@ -13,6 +13,8 @@ export async function POST(
   try {
     const session = await getServerSession(authOptions);
 
+    console.log('Session:', session); // Debug
+
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Brak autoryzacji' }, { status: 401 });
     }
@@ -20,6 +22,8 @@ export async function POST(
     const admin = await prisma.user.findUnique({
       where: { email: session.user.email },
     });
+
+    console.log('Admin email:', admin?.email); // Debug
 
     if (!admin || admin.email !== 'orzech363@gmail.com') {
       return NextResponse.json({ error: 'Brak uprawnień' }, { status: 403 });
