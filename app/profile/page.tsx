@@ -10,6 +10,7 @@ import UserPosts from '@/components/profile/UserPosts';
 import AdminPanel from '@/components/profile/AdminPanel';
 import UserWarnings from '@/components/profile/UserWarnings';
 import SecuritySettings from '@/components/profile/SecuritySettings';
+import UpdatesList from '@/components/profile/UpdatesList';
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -111,14 +112,7 @@ export default function ProfilePage() {
           {activeTab === 'posts' && <UserPosts />}
           {activeTab === 'warnings' && <UserWarnings />}
           {activeTab === 'security' && <SecuritySettings />}
-          {activeTab === 'updates' && (
-            <div>
-              <iframe
-                src="/dashboard/updates"
-                className="w-full h-[600px] border-0 rounded-lg"
-              />
-            </div>
-          )}
+          {activeTab === 'updates' && <UpdatesList />}
           {activeTab === 'admin' && session.user.isAdmin && <AdminPanel />}
         </div>
       </motion.div>
