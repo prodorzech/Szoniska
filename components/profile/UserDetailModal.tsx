@@ -275,23 +275,6 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
     }
   };
 
-  const handleDeleteWarning = async (warningId: string) => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/warnings/${warningId}`, {
-        method: 'DELETE',
-      });
-      if (res.ok) {
-        fetchWarnings();
-        onUpdate();
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleDeletePost = async (postId: string) => {
     if (!confirm('Czy na pewno chcesz usunąć ten post?')) return;
     
