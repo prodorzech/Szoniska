@@ -9,11 +9,39 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isValidating, setIsValidating] = useState(true);
+  const [tokenValid, setTokenValid] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const token = params.token;
+
+  // Validate and invalidate token on mount
+  useEffect(() => {
+    const validateToken = async () => {
+      try {
+        const response = await fetch(`/api/auth/reset-password?token=${token}`);
+        const data = await response.json();
+
+        if (response.ok && data.valid) {
+          setTokenValid(true);
+          setUserEmail(data.email);
+        } else {
+          setTokenValid(false);
+          setMessage({ type: 'error', text: 'Link resetowania hasła wygasł lub jest nieprawidłowy' });
+        }
+      } catch (error) {
+        setTokenValid(false);
+        setMessage({ type: 'error', text: 'Wystąpił błąd podczas weryfikacji linku' });
+      } finally {
+        setIsValidating(false);
+      }
+    };
+
+    validateToken();
+  }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,7 +63,7 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
       const response = await fetch('/api/auth/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ email: userEmail, password }),
       });
 
       const data = await response.json();
@@ -75,12 +103,42 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
               Nowe hasło
             </h1>
             <p className="text-gray-400 text-sm">
-              Wprowadź swoje nowe hasło
+              {isValidating ? 'Weryfikowanie linku...' : tokenValid ? 'Wprowadź swoje nowe hasło' : 'Link wygasł'}
             </p>
           </div>
 
-          {/* Message */}
-          {message && (
+          {/* Loading state */}
+          {isValidating && (
+            <div className="flex justify-center py-8">
+              <svg className="animate-spin h-8 w-8 text-purple-400" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            </div>
+          )}
+
+          {/* Token invalid */}
+          {!isValidating && !tokenValid && (
+            <div>
+              <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-lg mb-6">
+                <p className="text-sm">{message?.text || 'Link resetowania hasła wygasł lub został już użyty'}</p>
+              </div>
+              <div className="text-center">
+                <Link 
+                  href="/forgot-password"
+                  className="text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Wyślij nowy link resetujący
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Token valid - show form */}
+          {!isValidating && tokenValid && (
+            <>
+              {/* Message */}
+              {message && (
             <div className={`mb-6 p-4 rounded-lg ${
               message.type === 'success' 
                 ? 'bg-green-500/10 border border-green-500/30 text-green-400' 
@@ -176,6 +234,8 @@ export default function ResetPasswordPage({ params }: { params: { token: string 
               )}
             </button>
           </form>
+          </>
+          )}
 
           {/* Back to login */}
           <div className="mt-6 text-center">

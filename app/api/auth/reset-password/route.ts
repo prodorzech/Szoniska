@@ -4,16 +4,13 @@ import bcrypt from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const { token, password } = await req.json();
+    const { searchParams } = new URL(req.url);
+    const token = searchParams.get('token');
 
-    if (!token || !password) {
-      return NextResponse.json({ error: 'Token i hasło są wymagane' }, { status: 400 });
-    }
-
-    if (password.length < 6) {
-      return NextResponse.json({ error: 'Hasło musi mieć minimum 6 znaków' }, { status: 400 });
+    if (!token) {
+      return NextResponse.json({ error: 'Token jest wymagany' }, { status: 400 });
     }
 
     // Find user with valid token
@@ -27,19 +24,45 @@ export async function POST(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ error: 'Token jest nieprawidłowy lub wygasł' }, { status: 400 });
+      return NextResponse.json({ valid: false, error: 'Token jest nieprawidłowy lub wygasł' }, { status: 400 });
+    }
+
+    return NextResponse.json({ valid: true, email: user.email });
+  } catch (error) {
+    console.error('Error validating token:', error);
+    return NextResponse.json({ error: 'Wystąpił błąd' }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const { email, password } = await req.json();
+
+    if (!email || !password) {
+      return NextResponse.json({ error: 'Email i hasło są wymagane' }, { status: 400 });
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json({ error: 'Hasło musi mieć minimum 6 znaków' }, { status: 400 });
+    }
+
+    // Find user by email
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: 'Użytkownik nie istnieje' }, { status: 400 });
     }
 
     // Hash new password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Update password and clear reset token
+    // Update password
     await prisma.user.update({
       where: { id: user.id },
       data: {
         password: hashedPassword,
-        passwordResetToken: null,
-        passwordResetExpiry: null,
       },
     });
 
