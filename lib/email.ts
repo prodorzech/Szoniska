@@ -1,14 +1,7 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
+const fromEmail = process.env.EMAIL_FROM || 'verify@szoniska.pl';
 
 export async function sendVerificationEmail(email: string, token: string, name?: string) {
   const verificationUrl = `${process.env.NEXTAUTH_URL}/verify-email?token=${token}`;
@@ -114,8 +107,8 @@ export async function sendVerificationEmail(email: string, token: string, name?:
     </html>
   `;
 
-  await transporter.sendMail({
-    from: `"Szoniska 🎮" <${process.env.SMTP_USER}>`,
+  await resend.emails.send({
+    from: `Szoniska 🎮 <${fromEmail}>`,
     to: email,
     subject: '🎮 Potwierdź swój email - Szoniska',
     html: htmlContent,
@@ -206,8 +199,8 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
     </html>
   `;
 
-  await transporter.sendMail({
-    from: `"Szoniska 🎮" <${process.env.SMTP_USER}>`,
+  await resend.emails.send({
+    from: `Szoniska 🎮 <${fromEmail}>`,
     to: email,
     subject: '🔒 Reset hasła - Szoniska',
     html: htmlContent,
