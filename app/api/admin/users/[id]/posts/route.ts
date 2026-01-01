@@ -29,6 +29,10 @@ export async function GET(
         id: true,
         title: true,
         description: true,
+        images: true,
+        facebookUrl: true,
+        instagramUrl: true,
+        tiktokUrl: true,
         createdAt: true,
         _count: {
           select: {
