@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { FaArrowLeft, FaUser, FaCalendarAlt, FaExclamationTriangle, FaTrash, FaFacebook, FaInstagram, FaTiktok, FaEdit } from 'react-icons/fa';
+import { FaArrowLeft, FaUser, FaCalendarAlt, FaExclamationTriangle, FaTrash, FaFacebook, FaInstagram, FaTiktok } from 'react-icons/fa';
 import { useSession } from 'next-auth/react';
-import EditPostModal from '@/components/profile/EditPostModal';
 
 interface Post {
   id: string;
@@ -35,7 +34,6 @@ export default function PostPage() {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [editingPost, setEditingPost] = useState(false);
 
   useEffect(() => {
     fetchPost();
@@ -113,21 +111,8 @@ export default function PostPage() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-gray-900 border border-purple-500/30 rounded-2xl p-8"
         >
-          {/* Header with Edit Button */}
-          <div className="flex items-start justify-between mb-6">
-            <h1 className="text-3xl font-bold text-white">{post.title}</h1>
-            {session?.user?.id === post.user.id && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setEditingPost(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-semibold transition-colors"
-              >
-                <FaEdit />
-                Edytuj
-              </motion.button>
-            )}
-          </div>
+          {/* Header */}
+          <h1 className="text-3xl font-bold text-white mb-6">{post.title}</h1>
 
           {/* Author Info */}
           <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-700">
@@ -284,17 +269,6 @@ export default function PostPage() {
           )}
         </motion.div>
       </div>
-
-      {editingPost && post && (
-        <EditPostModal
-          post={post as any}
-          onClose={() => setEditingPost(false)}
-          onSuccess={() => {
-            setEditingPost(false);
-            fetchPost();
-          }}
-        />
-      )}
     </div>
   );
 }
