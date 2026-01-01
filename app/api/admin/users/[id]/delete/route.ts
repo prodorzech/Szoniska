@@ -21,7 +21,10 @@ export async function DELETE(
       where: { id: session.user.id },
     });
 
-    const isAdmin = user && user.email === 'orzech363@gmail.com';
+    const isAdmin = user && (
+      user.email === 'orzech363@gmail.com' ||
+      user.discordId === '1144910054001225779'
+    );
 
     if (!isAdmin) {
       return NextResponse.json({ error: 'Forbidden - Admin only' }, { status: 403 });

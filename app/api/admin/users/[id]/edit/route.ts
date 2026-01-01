@@ -31,11 +31,18 @@ export async function POST(
       found: !!admin,
       email: admin?.email,
       id: admin?.id,
+      discordId: admin?.discordId,
     });
 
-    const isAdmin = admin && admin.email === 'orzech363@gmail.com';
+    // Sprawdzanie czy użytkownik jest adminem:
+    // 1. Email admin: orzech363@gmail.com
+    // 2. Discord ID: 1144910054001225779 (Twój Discord ID)
+    const isAdmin = admin && (
+      admin.email === 'orzech363@gmail.com' ||
+      admin.discordId === '1144910054001225779'
+    );
 
-    console.log('EDIT User - isAdmin:', isAdmin, 'admin.email:', admin?.email);
+    console.log('EDIT User - isAdmin:', isAdmin, 'admin.email:', admin?.email, 'admin.discordId:', admin?.discordId);
 
     if (!isAdmin) {
       return NextResponse.json({ 

@@ -17,8 +17,8 @@ export async function checkAdminPermissions() {
     return { isAdmin: false, error: 'Użytkownik nie znaleziony', status: 404, user: null };
   }
 
-  // Sprawdź czy użytkownik jest adminem (przez email)
-  const isAdmin = user.email === 'orzech363@gmail.com';
+  // Sprawdź czy użytkownik jest adminem (przez email lub Discord ID)
+  const isAdmin = user.email === 'orzech363@gmail.com' || user.discordId === '1144910054001225779';
 
   if (!isAdmin) {
     return { isAdmin: false, error: 'Brak uprawnień', status: 403, user };

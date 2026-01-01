@@ -31,12 +31,13 @@ export async function DELETE(
       found: !!admin,
       email: admin?.email,
       id: admin?.id,
+      discordId: admin?.discordId,
     });
 
-    // Sprawdź czy to admin (przez email lub ID)
+    // Sprawdzanie czy użytkownik jest adminem
     const isAdmin = admin && (
-      admin.email === 'orzech363@gmail.com' || 
-      admin.id === session.user.id // Dodaj tutaj swoje ID jeśli potrzebne
+      admin.email === 'orzech363@gmail.com' ||
+      admin.discordId === '1144910054001225779'
     );
 
     if (!isAdmin) {

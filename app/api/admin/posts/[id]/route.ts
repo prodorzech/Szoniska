@@ -20,7 +20,10 @@ export async function DELETE(
       where: { id: session.user.id },
     });
 
-    const isAdmin = admin && admin.email === 'orzech363@gmail.com';
+    const isAdmin = admin && (
+      admin.email === 'orzech363@gmail.com' ||
+      admin.discordId === '1144910054001225779'
+    );
 
     if (!isAdmin) {
       return NextResponse.json({ error: 'Brak uprawnień' }, { status: 403 });
