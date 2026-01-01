@@ -116,7 +116,7 @@ export async function sendVerificationEmail(email: string, token: string, name?:
 }
 
 export async function sendPasswordResetEmail(email: string, token: string, name?: string) {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}`;
+  const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password/${token}`;
 
   const htmlContent = `
     <!DOCTYPE html>

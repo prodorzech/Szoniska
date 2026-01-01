@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaLock, FaShieldAlt, FaQrcode, FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
+import { FaLock, FaShieldAlt, FaQrcode, FaCheckCircle, FaTimesCircle, FaCopy } from 'react-icons/fa';
 import Image from 'next/image';
 
 export default function SecuritySettings() {
@@ -27,6 +27,7 @@ export default function SecuritySettings() {
     type: 'success' | 'error';
     text: string;
   } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   // Pobierz status 2FA przy montowaniu komponentu
   useEffect(() => {
@@ -180,6 +181,12 @@ export default function SecuritySettings() {
     }
   };
 
+  const copySecretToClipboard = () => {
+    navigator.clipboard.writeText(secret);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="space-y-6">
       {/* Zmiana hasła */}
@@ -295,6 +302,26 @@ export default function SecuritySettings() {
           <div className="space-y-4">
             <div className="bg-white p-4 rounded-lg flex justify-center">
               <Image src={qrCode} alt="QR Code" width={200} height={200} />
+            </div>
+
+            {/* Klucz konfiguracyjny */}
+            <div className="bg-gray-800/50 border border-purple-500/30 rounded-lg p-4">
+              <p className="text-gray-400 text-xs mb-2 text-center">
+                Lub wprowadź klucz ręcznie:
+              </p>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 bg-gray-900 rounded px-3 py-2 font-mono text-sm text-purple-400 break-all">
+                  {secret}
+                </div>
+                <button
+                  onClick={copySecretToClipboard}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded transition-colors flex items-center gap-2 whitespace-nowrap"
+                  title="Skopiuj klucz"
+                >
+                  <FaCopy />
+                  {copied ? 'Skopiowano!' : 'Kopiuj'}
+                </button>
+              </div>
             </div>
 
             <p className="text-gray-400 text-sm">

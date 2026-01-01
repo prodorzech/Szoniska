@@ -19,6 +19,8 @@ model User {
   nameChangedAt DateTime?
   image         String?
   password      String?
+  passwordResetToken String?
+  passwordResetExpiry DateTime?
   discordId     String?
   discordUsername String?
   googleId      String?

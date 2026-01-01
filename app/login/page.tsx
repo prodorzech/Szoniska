@@ -91,7 +91,15 @@ function LoginContent() {
             </div>
 
             <div>
-              <label className="block text-gray-300 text-sm font-semibold mb-2">Hasło</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-gray-300 text-sm font-semibold">Hasło</label>
+                <Link 
+                  href="/forgot-password"
+                  className="text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                >
+                  Nie pamiętam hasła
+                </Link>
+              </div>
               <div className="relative">
                 <FaLock className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <input
