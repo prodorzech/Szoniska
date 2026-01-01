@@ -21,7 +21,7 @@ export async function POST(
       where: { email: session.user.email },
     });
 
-    if (!admin || admin.email !== 'orzech363%40gmail.com') {
+    if (!admin || admin.email !== 'orzech363@gmail.com') {
       return NextResponse.json({ error: 'Brak uprawnień' }, { status: 403 });
     }
 
