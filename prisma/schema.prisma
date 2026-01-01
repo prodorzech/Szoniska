@@ -16,6 +16,7 @@ model User {
   email         String?   @unique
   emailVerified Boolean   @default(false)
   name          String?
+  nameChangedAt DateTime?
   image         String?
   password      String?
   discordId     String?

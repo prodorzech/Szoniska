@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaCamera, FaEdit } from 'react-icons/fa';
+import { FaTimes, FaCamera, FaEdit, FaExclamationTriangle } from 'react-icons/fa';
 
 interface EditProfileModalProps {
   onClose: () => void;
@@ -17,6 +17,7 @@ export default function EditProfileModal({ onClose, onSuccess }: EditProfileModa
   const [avatarPreview, setAvatarPreview] = useState(session?.user?.image || '');
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +50,13 @@ export default function EditProfileModal({ onClose, onSuccess }: EditProfileModa
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // Show confirmation if name changed
+    if (name !== session?.user?.name && !showConfirmation) {
+      setShowConfirmation(true);
+      return;
+    }
+
     setUploading(true);
 
     try {
@@ -82,12 +90,12 @@ export default function EditProfileModal({ onClose, onSuccess }: EditProfileModa
         }
       }
 
-      // Update session
+      // Update session and reload page
       await update();
-      onSuccess();
-      onClose();
+      window.location.reload();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił błąd');
+      setShowConfirmation(false);
     } finally {
       setUploading(false);
     }
@@ -176,7 +184,30 @@ export default function EditProfileModal({ onClose, onSuccess }: EditProfileModa
                 />
                 <FaEdit className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               </div>
+              <p className="text-gray-500 text-xs mt-2">
+                Możesz zmienić nazwę raz na 7 dni
+              </p>
             </div>
+
+            {/* Confirmation Warning */}
+            {showConfirmation && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <FaExclamationTriangle className="text-yellow-500 mt-1 flex-shrink-0" size={20} />
+                  <div>
+                    <p className="text-yellow-400 font-semibold mb-1">Potwierdź zmianę nazwy</p>
+                    <p className="text-yellow-300/80 text-sm">
+                      Czy na pewno chcesz zmienić nazwę na <strong>{name}</strong>? 
+                      Będziesz mógł ją zmienić ponownie dopiero za 7 dni.
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {/* Error Message */}
             {error && (
@@ -194,13 +225,19 @@ export default function EditProfileModal({ onClose, onSuccess }: EditProfileModa
                 disabled={uploading}
                 className="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-700 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors"
               >
-                {uploading ? 'Zapisywanie...' : 'Zapisz zmiany'}
+                {uploading ? 'Zapisywanie...' : showConfirmation ? 'Potwierdź' : 'Zapisz zmiany'}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="button"
-                onClick={onClose}
+                onClick={() => {
+                  if (showConfirmation) {
+                    setShowConfirmation(false);
+                  } else {
+                    onClose();
+                  }
+                }}
                 disabled={uploading}
                 className="px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-700 text-white font-semibold rounded-lg transition-colors"
               >
