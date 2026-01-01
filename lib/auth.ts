@@ -49,12 +49,20 @@ export const authOptions: NextAuthOptions = {
           }
 
           // Weryfikuj kod 2FA
+          console.log('Weryfikacja 2FA:', {
+            hasSecret: !!user.twoFactorSecret,
+            codeLength: credentials.twoFactorCode?.length,
+            code: credentials.twoFactorCode
+          });
+
           const verified = speakeasy.totp.verify({
             secret: user.twoFactorSecret,
             encoding: 'base32',
-            token: credentials.twoFactorCode,
+            token: credentials.twoFactorCode.toString().trim(),
             window: 2,
           });
+
+          console.log('Wynik weryfikacji:', verified);
 
           if (!verified) {
             throw new Error('Nieprawidłowy kod 2FA');

@@ -28,12 +28,18 @@ function LoginContent() {
     setLoading(true);
 
     try {
-      const result = await signIn('credentials', {
+      const credentials: any = {
         email: formData.email,
         password: formData.password,
-        twoFactorCode: formData.twoFactorCode || undefined,
         redirect: false,
-      });
+      };
+
+      // Dodaj kod 2FA tylko jeśli jest wypełniony
+      if (formData.twoFactorCode && formData.twoFactorCode.length === 6) {
+        credentials.twoFactorCode = formData.twoFactorCode;
+      }
+
+      const result = await signIn('credentials', credentials);
 
       if (result?.error) {
         if (result.error === '2FA_REQUIRED') {
