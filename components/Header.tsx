@@ -27,18 +27,19 @@ export default function Header() {
       >
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-20">
-            <Link href="/">
+            <Link href="/" className="flex items-center gap-3">
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 className="flex items-center gap-3 cursor-pointer"
               >
-                <Image
-                  src="/logo.png"
-                  alt="Szoniska Logo"
-                  width={40}
-                  height={40}
-                  className="rounded-lg"
-                />
+                <div className="relative w-10 h-10">
+                  <Image
+                    src="/logo.png"
+                    alt="Szoniska Logo"
+                    fill
+                    className="rounded-lg object-contain"
+                  />
+                </div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
                   Szoniska
                 </h1>
