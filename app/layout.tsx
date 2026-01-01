@@ -5,8 +5,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
-  title: 'Szoniska - Portal społecznościowy',
-  description: 'Dziel się swoimi treściami z innymi',
+  title: 'Szoniska',
+  description: 'Dziel się szonami z innymi!',
 };
 
 export default function RootLayout({
