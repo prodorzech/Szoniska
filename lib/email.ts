@@ -24,7 +24,7 @@ export async function sendVerificationEmail(email: string, token: string, name?:
               <tr>
                 <td style="background: linear-gradient(90deg, #7c3aed 0%, #4f46e5 100%); padding: 40px 30px; text-align: center;">
                   <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-                    🎮 Szoniska
+                    Szoniska
                   </h1>
                   <p style="margin: 10px 0 0 0; color: rgba(255,255,255,0.9); font-size: 16px;">
                     Platforma społeczności gaming
@@ -36,7 +36,7 @@ export async function sendVerificationEmail(email: string, token: string, name?:
               <tr>
                 <td style="padding: 50px 40px;">
                   <h2 style="color: #ffffff; font-size: 24px; margin: 0 0 20px 0; font-weight: 600;">
-                    ${name ? `Witaj, ${name}! 👋` : 'Witaj! 👋'}
+                    ${name ? `Witaj, ${name}!` : 'Witaj!'}
                   </h2>
                   
                   <p style="color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
@@ -108,9 +108,9 @@ export async function sendVerificationEmail(email: string, token: string, name?:
   `;
 
   await resend.emails.send({
-    from: `Szoniska 🎮 <${fromEmail}>`,
+    from: `Szoniska <${fromEmail}>`,
     to: email,
-    subject: '🎮 Potwierdź swój email - Szoniska',
+    subject: 'Potwierdź swój email - Szoniska',
     html: htmlContent,
   });
 }
@@ -135,7 +135,7 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
               <tr>
                 <td style="background: linear-gradient(90deg, #7c3aed 0%, #4f46e5 100%); padding: 40px 30px; text-align: center;">
                   <h1 style="margin: 0; color: #ffffff; font-size: 32px; font-weight: 700; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-                    🎮 Szoniska
+                    Szoniska
                   </h1>
                 </td>
               </tr>
@@ -197,9 +197,9 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
   `;
 
   await resend.emails.send({
-    from: `Szoniska 🎮 <${fromEmail}>`,
+    from: `Szoniska <${fromEmail}>`,
     to: email,
-    subject: '🔒 Reset hasła - Szoniska',
+    subject: 'Reset hasła - Szoniska',
     html: htmlContent,
   });
 }
