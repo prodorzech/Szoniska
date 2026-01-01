@@ -146,20 +146,10 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
                     ${name ? `Cześć, ${name}! 🔒` : 'Reset hasła 🔒'}
                   </h2>
                   
-                  <p style="color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">
+                  <p style="color: rgba(255,255,255,0.85); font-size: 16px; line-height: 1.6; margin: 0 0 30px 0;">
                     Otrzymaliśmy prośbę o zresetowanie hasła do Twojego konta. 
-                    Użyj poniższego kodu weryfikacyjnego:
+                    Kliknij poniższy przycisk, aby ustawić nowe hasło:
                   </p>
-
-                  <table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 30px 0;">
-                    <tr>
-                      <td align="center" style="padding: 20px; background: rgba(168, 85, 247, 0.1); border: 2px dashed #a855f7; border-radius: 12px;">
-                        <span style="font-size: 36px; font-weight: 700; color: #a855f7; letter-spacing: 8px; font-family: 'Courier New', monospace;">
-                          ${token}
-                        </span>
-                      </td>
-                    </tr>
-                  </table>
 
                   <table width="100%" cellpadding="0" cellspacing="0">
                     <tr>
@@ -170,6 +160,13 @@ export async function sendPasswordResetEmail(email: string, token: string, name?
                       </td>
                     </tr>
                   </table>
+
+                  <p style="color: rgba(255,255,255,0.6); font-size: 14px; line-height: 1.6; margin: 30px 0 0 0; text-align: center;">
+                    Jeśli przycisk nie działa, skopiuj poniższy link i wklej go w przeglądarce:
+                  </p>
+                  <p style="color: rgba(168, 85, 247, 0.8); font-size: 12px; line-height: 1.6; margin: 10px 0 0 0; text-align: center; word-break: break-all;">
+                    ${resetUrl}
+                  </p>
 
                   <table width="100%" cellpadding="0" cellspacing="0" style="margin: 30px 0 0 0;">
                     <tr>
