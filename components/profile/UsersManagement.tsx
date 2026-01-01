@@ -50,6 +50,7 @@ export default function UsersManagement() {
   const [editPostWarningMessage, setEditPostWarningMessage] = useState('');
   const [deletingPostWarning, setDeletingPostWarning] = useState<any>(null);
   const [editingPost, setEditingPost] = useState<any>(null);
+  const [deletingUser, setDeletingUser] = useState<User | null>(null);
 
   useEffect(() => {
     fetchUsers();
@@ -309,6 +310,28 @@ export default function UsersManagement() {
     }
   };
 
+  const handleDeleteUser = async (userId: string) => {
+    setProcessing(true);
+    try {
+      const res = await fetch(`/api/admin/users/${userId}/delete`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setDeletingUser(null);
+        fetchUsers();
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Nie można usunąć użytkownika');
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Wystąpił błąd podczas usuwania użytkownika');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center py-8">
@@ -510,6 +533,17 @@ export default function UsersManagement() {
                 title={user.isBlocked ? 'Odblokuj' : 'Zablokuj'}
               >
                 <FaBan size={18} />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setDeletingUser(user)}
+                disabled={processing}
+                className="p-2 bg-red-700 hover:bg-red-800 text-white rounded-lg transition-colors"
+                title="Usuń użytkownika"
+              >
+                <FaTrash size={18} />
               </motion.button>
             </div>
           </div>
@@ -1345,6 +1379,91 @@ export default function UsersManagement() {
           }}
         />
       )}
+
+      {/* Modal potwierdzenia usunięcia użytkownika */}
+      <AnimatePresence>
+        {deletingUser && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+            onClick={() => setDeletingUser(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-gradient-to-br from-gray-900 to-black border-2 border-red-500/50 rounded-2xl p-6 w-full max-w-md"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-red-600/20 flex items-center justify-center">
+                  <FaTrash className="text-red-500" size={20} />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Usuń użytkownika</h3>
+                  <p className="text-gray-400 text-sm">Ta operacja jest nieodwracalna!</p>
+                </div>
+              </div>
+
+              <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 mb-6">
+                <div className="flex items-center gap-3">
+                  {deletingUser.image ? (
+                    <img src={deletingUser.image} alt={deletingUser.name} className="w-12 h-12 rounded-full" />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">
+                      {deletingUser.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div>
+                    <p className="text-white font-semibold">{deletingUser.name}</p>
+                    <p className="text-gray-400 text-sm">{deletingUser.email}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-4 mb-6">
+                <p className="text-yellow-200 text-sm font-semibold mb-2">⚠️ Uwaga!</p>
+                <p className="text-yellow-200 text-sm">
+                  Usunięcie użytkownika spowoduje <strong>trwałe usunięcie</strong>:
+                </p>
+                <ul className="list-disc list-inside text-yellow-200 text-sm mt-2 space-y-1">
+                  <li>Wszystkich postów użytkownika</li>
+                  <li>Wszystkich komentarzy</li>
+                  <li>Wszystkich ostrzeżeń</li>
+                  <li>Konta i danych osobowych</li>
+                </ul>
+              </div>
+
+              <p className="text-gray-300 mb-6">
+                Czy na pewno chcesz <strong className="text-red-400">permanentnie usunąć</strong> tego użytkownika?
+              </p>
+
+              <div className="flex gap-3">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleDeleteUser(deletingUser.id)}
+                  disabled={processing}
+                  className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold rounded-lg transition-colors"
+                >
+                  {processing ? 'Usuwanie...' : 'TAK, Usuń użytkownika'}
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setDeletingUser(null)}
+                  disabled={processing}
+                  className="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-600 text-white font-semibold rounded-lg transition-colors"
+                >
+                  Anuluj
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
