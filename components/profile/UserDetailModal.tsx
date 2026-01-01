@@ -37,8 +37,8 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
   const [loading, setLoading] = useState(false);
   const [warnings, setWarnings] = useState<Warning[]>([]);
   const [posts, setPosts] = useState<any[]>([]);
-  const [showPosts, setShowPosts] = useState(false);
-  const [showWarnings, setShowWarnings] = useState(false);
+  const [showPosts, setShowPosts] = useState(true); // Domyślnie rozwinięte
+  const [showWarnings, setShowWarnings] = useState(true); // Domyślnie rozwinięte
   const [newWarning, setNewWarning] = useState('');
   const [discordLinkId, setDiscordLinkId] = useState('');
   const [authLink, setAuthLink] = useState('');
