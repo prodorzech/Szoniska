@@ -95,21 +95,23 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-purple-500/30">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 font-semibold transition-all ${
-                activeTab === tab.id
-                  ? 'bg-purple-600/20 text-purple-400 border-b-2 border-purple-500'
-                  : 'text-gray-400 hover:text-white hover:bg-purple-600/10'
-              }`}
-            >
-              <tab.icon size={20} />
-              {tab.label}
-            </button>
-          ))}
+        <div className="overflow-x-auto border-b border-purple-500/30">
+          <div className="flex min-w-max">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex items-center justify-center gap-2 px-6 py-4 font-semibold transition-all whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'bg-purple-600/20 text-purple-400 border-b-2 border-purple-500'
+                    : 'text-gray-400 hover:text-white hover:bg-purple-600/10'
+                }`}
+              >
+                <tab.icon size={20} />
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Content */}
