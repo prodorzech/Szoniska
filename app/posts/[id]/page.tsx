@@ -9,14 +9,14 @@ import { useSession } from 'next-auth/react';
 interface Post {
   id: string;
   title: string;
-  content: string;
+  description: string;
   createdAt: string;
-  author: {
+  user: {
     id: string;
     name: string;
     image?: string;
   };
-  postWarnings: Array<{
+  warnings: Array<{
     id: string;
     message: string;
     createdAt: string;
@@ -112,21 +112,21 @@ export default function PostPage() {
 
           {/* Author Info */}
           <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-700">
-            {post.author.image ? (
+            {post.user.image ? (
               <img
-                src={post.author.image}
-                alt={post.author.name}
+                src={post.user.image}
+                alt={post.user.name}
                 className="w-12 h-12 rounded-full border-2 border-purple-500"
               />
             ) : (
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-lg font-bold border-2 border-purple-500">
-                {post.author.name.charAt(0).toUpperCase()}
+                {post.user.name.charAt(0).toUpperCase()}
               </div>
             )}
             <div>
               <p className="text-white font-semibold flex items-center gap-2">
                 <FaUser className="text-purple-400" />
-                {post.author.name}
+                {post.user.name}
               </p>
               <p className="text-gray-400 text-sm flex items-center gap-2">
                 <FaCalendarAlt />
@@ -137,18 +137,18 @@ export default function PostPage() {
 
           {/* Content */}
           <div className="prose prose-invert max-w-none mb-8">
-            <p className="text-gray-300 whitespace-pre-wrap">{post.content}</p>
+            <p className="text-gray-300 whitespace-pre-wrap">{post.description}</p>
           </div>
 
           {/* Warnings */}
-          {post.postWarnings && post.postWarnings.length > 0 && (
+          {post.warnings && post.warnings.length > 0 && (
             <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-6">
               <h3 className="text-yellow-400 font-semibold mb-4 flex items-center gap-2">
                 <FaExclamationTriangle />
-                Ostrzeżenia administratora ({post.postWarnings.length})
+                Ostrzeżenia administratora ({post.warnings.length})
               </h3>
               <div className="space-y-3">
-                {post.postWarnings.map((warning) => (
+                {post.warnings.map((warning) => (
                   <div key={warning.id} className="bg-gray-800/50 rounded-lg p-4 flex items-start justify-between">
                     <div className="flex-1">
                       <p className="text-white">{warning.message}</p>

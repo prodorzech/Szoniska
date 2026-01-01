@@ -643,13 +643,13 @@ export default function UserDetailModal({ user, onClose, onUpdate }: UserDetailM
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
                           <h4 className="text-white font-semibold">{post.title}</h4>
-                          <p className="text-gray-400 text-sm line-clamp-2">{post.content}</p>
+                          <p className="text-gray-400 text-sm line-clamp-2">{post.description}</p>
                           <div className="flex gap-4 mt-2 text-xs text-gray-500">
                             <span>{new Date(post.createdAt).toLocaleString('pl-PL')}</span>
-                            {post._count?.postWarnings > 0 && (
+                            {post._count?.warnings > 0 && (
                               <span className="text-yellow-400">
                                 <FaExclamationTriangle className="inline mr-1" />
-                                {post._count.postWarnings} ostrzeżeń
+                                {post._count.warnings} ostrzeżeń
                               </span>
                             )}
                           </div>

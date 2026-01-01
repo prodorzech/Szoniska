@@ -25,16 +25,14 @@ export async function GET(
       where: {
         userId: params.id,
       },
-      include: {
-        user: {
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        createdAt: true,
+        _count: {
           select: {
-            name: true,
-            image: true,
-          },
-        },
-        warnings: {
-          orderBy: {
-            createdAt: 'desc',
+            warnings: true,
           },
         },
       },
