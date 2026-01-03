@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth';
 import { v2 as cloudinary } from 'cloudinary';
 
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+export const maxDuration = 60; // 60 seconds max execution
 
 // Configure Cloudinary
 cloudinary.config({
