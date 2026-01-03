@@ -25,7 +25,7 @@ export default function PostCard({ post, onClick }: PostCardProps) {
         <div className="relative h-56 overflow-hidden">
           {hasVideos ? (
             <video
-              src={post.videos[0]}
+              src={post.videos![0]}
               className="w-full h-full object-cover"
               muted
             />

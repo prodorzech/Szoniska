@@ -6,12 +6,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client', 'bcryptjs'],
   },
-  api: {
-    bodyParser: {
-      sizeLimit: '100mb',
-    },
-    responseLimit: false,
-  },
 };
 
 export default nextConfig;
