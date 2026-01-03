@@ -97,6 +97,7 @@ export default function EditPostModal({ post, onClose, onSuccess }: EditPostModa
     setSubmitting(true);
 
     try {
+      // Upload new images
       const imageUrls: string[] = [...existingImages];
       
       for (const image of images) {
@@ -114,6 +115,24 @@ export default function EditPostModal({ post, onClose, onSuccess }: EditPostModa
         imageUrls.push(url);
       }
 
+      // Upload new videos
+      const videoUrls: string[] = [...existingVideos];
+      
+      for (const video of videos) {
+        const formData = new FormData();
+        formData.append('file', video);
+        
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!uploadRes.ok) throw new Error('Failed to upload video');
+        
+        const { url } = await uploadRes.json();
+        videoUrls.push(url);
+      }
+
       const res = await fetch(`/api/posts/${post.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -121,6 +140,7 @@ export default function EditPostModal({ post, onClose, onSuccess }: EditPostModa
           title,
           description,
           images: imageUrls,
+          videos: videoUrls,
           facebookUrl: enableFacebook ? facebookUrl : null,
           instagramUrl: enableInstagram ? instagramUrl : null,
           tiktokUrl: enableTiktok ? tiktokUrl : null,
@@ -241,6 +261,69 @@ export default function EditPostModal({ post, onClose, onSuccess }: EditPostModa
                       <button
                         type="button"
                         onClick={() => removeNewImage(idx)}
+                        className="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <FaTimes size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Videos Section */}
+            <div>
+              <label className="block text-white font-semibold mb-2 flex items-center gap-2">
+                <FaVideo />
+                Filmy (max 5)
+              </label>
+              <div className="space-y-4">
+                {existingVideos.length + videos.length < 5 && (
+                  <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-blue-500/30 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                    <div className="text-center">
+                      <FaVideo className="mx-auto text-blue-400 mb-2" size={32} />
+                      <span className="text-gray-400">Kliknij aby dodać filmy</span>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {existingVideos.length + videos.length}/5
+                      </p>
+                    </div>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      multiple
+                      onChange={handleVideoChange}
+                      className="hidden"
+                    />
+                  </label>
+                )}
+
+                <div className="grid grid-cols-3 gap-2">
+                  {existingVideos.map((video, idx) => (
+                    <div key={`existing-video-${idx}`} className="relative group">
+                      <video
+                        src={video}
+                        className="w-full h-32 object-cover rounded-lg bg-black"
+                        controls
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeExistingVideo(idx)}
+                        className="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <FaTimes size={12} />
+                      </button>
+                    </div>
+                  ))}
+                  {videoPreviews.map((preview, idx) => (
+                    <div key={`new-video-${idx}`} className="relative group">
+                      <video
+                        src={preview}
+                        className="w-full h-32 object-cover rounded-lg bg-black border-2 border-green-500"
+                        controls
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeNewVideo(idx)}
                         className="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                       >
                         <FaTimes size={12} />

@@ -188,8 +188,26 @@ export default function UserPosts() {
                 </div>
               </div>
 
-              {post.images.length > 0 && (
-                <div className="flex gap-2 mb-4">
+              {/* Media preview */}
+              <div className="mb-4">
+                {post.videos && post.videos.length > 0 && (
+                  <div className="flex gap-2 mb-2">
+                    {post.videos.slice(0, 2).map((video, idx) => (
+                      <video
+                        key={idx}
+                        src={video}
+                        className="w-24 h-24 object-cover rounded-lg bg-black"
+                      />
+                    ))}
+                    {post.videos.length > 2 && (
+                      <div className="w-24 h-24 bg-gray-700 rounded-lg flex items-center justify-center text-gray-400 text-sm">
+                        +{post.videos.length - 2}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {post.images.length > 0 && (
+                <div className="flex gap-2">
                   {post.images.slice(0, 3).map((img, idx) => (
                     <img
                       key={idx}
@@ -204,7 +222,8 @@ export default function UserPosts() {
                     </div>
                   )}
                 </div>
-              )}
+                )}
+              </div>
 
               {post.warnings && post.warnings.length > 0 && (
                 <div className="mt-4 space-y-2">

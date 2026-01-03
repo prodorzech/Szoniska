@@ -11,6 +11,7 @@ interface Post {
   title: string;
   description: string;
   images?: string[];
+  videos?: string[];
   facebookUrl?: string;
   instagramUrl?: string;
   tiktokUrl?: string;
@@ -143,6 +144,30 @@ export default function PostPage() {
           <div className="mb-8">
             <p className="text-gray-300 whitespace-pre-wrap text-lg">{post.description}</p>
           </div>
+
+          {/* Videos Gallery */}
+          {post.videos && post.videos.length > 0 && (
+            <div className="mb-8">
+              <h3 className="text-white font-semibold mb-4 text-lg">Filmy</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {post.videos.map((video, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="relative rounded-xl overflow-hidden border-2 border-purple-500/30 hover:border-purple-500 transition-colors bg-black"
+                  >
+                    <video
+                      src={video}
+                      controls
+                      className="w-full h-auto object-contain"
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Images Gallery */}
           {post.images && post.images.length > 0 && (

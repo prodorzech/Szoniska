@@ -63,9 +63,26 @@ export default function PostModal({ post, onClose, onUpdate }: PostModalProps) {
 
           <div className="overflow-y-auto max-h-[90vh]">
             <div className="flex flex-col lg:flex-row">
-              {/* Galeria zdjęć - lewa strona */}
-              {post.images.length > 0 && (
+              {/* Galeria zdjęć i filmów - lewa strona */}
+              {(post.images.length > 0 || (post.videos && post.videos.length > 0)) && (
                 <div className="lg:w-1/2 relative bg-black">
+                  {/* Filmy */}
+                  {post.videos && post.videos.length > 0 && (
+                    <div className="space-y-4 p-4">
+                      {post.videos.map((video, idx) => (
+                        <div key={idx} className="relative">
+                          <video
+                            src={video}
+                            controls
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Zdjęcia */}
+                  {post.images.length > 0 && (
                   <div className="relative aspect-square">
                     <AnimatePresence mode="wait">
                       <motion.img
@@ -103,6 +120,7 @@ export default function PostModal({ post, onClose, onUpdate }: PostModalProps) {
                       </>
                     )}
                   </div>
+                  )}
 
                   {/* Miniaturki */}
                   {post.images.length > 1 && (
@@ -132,7 +150,7 @@ export default function PostModal({ post, onClose, onUpdate }: PostModalProps) {
               )}
 
               {/* Treść posta - prawa strona */}
-              <div className={`${post.images.length > 0 ? 'lg:w-1/2' : 'w-full'} p-6 flex flex-col`}>
+              <div className={`${(post.images.length > 0 || (post.videos && post.videos.length > 0)) ? 'lg:w-1/2' : 'w-full'} p-6 flex flex-col`}>
                 <div className="flex items-center gap-3 mb-4">
                   {post.user.image ? (
                     <img

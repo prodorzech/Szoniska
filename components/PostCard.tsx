@@ -17,18 +17,33 @@ export default function PostCard({ post, onClick }: PostCardProps) {
       onClick={onClick}
       className="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-xl overflow-hidden cursor-pointer shadow-xl shadow-purple-500/10 hover:shadow-purple-500/30 transition-all"
     >
-      {post.images.length > 0 && (
+      {(post.images.length > 0 || (post.videos && post.videos.length > 0)) && (
         <div className="relative h-56 overflow-hidden">
-          <img
-            src={post.images[0]}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-          {post.images.length > 1 && (
-            <div className="absolute bottom-2 right-2 bg-black/70 px-3 py-1 rounded-full text-sm">
-              +{post.images.length - 1} zdjęć
-            </div>
+          {post.videos && post.videos.length > 0 ? (
+            <video
+              src={post.videos[0]}
+              className="w-full h-full object-cover"
+              muted
+            />
+          ) : (
+            <img
+              src={post.images[0]}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
           )}
+          <div className="absolute bottom-2 right-2 flex gap-2">
+            {post.images.length > 1 && (
+              <div className="bg-black/70 px-3 py-1 rounded-full text-sm">
+                +{post.images.length - 1} zdjęć
+              </div>
+            )}
+            {post.videos && post.videos.length > 1 && (
+              <div className="bg-black/70 px-3 py-1 rounded-full text-sm">
+                +{post.videos.length - 1} filmów
+              </div>
+            )}
+          </div>
         </div>
       )}
 

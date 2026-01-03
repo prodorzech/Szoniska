@@ -81,7 +81,7 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { title, description, images, facebookUrl, instagramUrl, tiktokUrl } = body;
+    const { title, description, images, videos, facebookUrl, instagramUrl, tiktokUrl } = body;
 
     const updatedPost = await prisma.post.update({
       where: { id: params.id },
@@ -89,6 +89,7 @@ export async function PATCH(
         title,
         description,
         images: images || [],
+        videos: videos || [],
         facebookUrl,
         instagramUrl,
         tiktokUrl,
