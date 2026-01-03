@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaInfoCircle, FaExclamationTriangle, FaExclamationCircle, FaCheckSquare, FaTimes } from 'react-icons/fa';
+import { FaInfoCircle, FaExclamationTriangle, FaExclamationCircle, FaCheckSquare } from 'react-icons/fa';
 
 interface Announcement {
   id: string;
@@ -13,7 +13,6 @@ interface Announcement {
 
 export default function AnnouncementBanner() {
   const [announcement, setAnnouncement] = useState<Announcement | null>(null);
-  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     fetchAnnouncement();
@@ -33,67 +32,110 @@ export default function AnnouncementBanner() {
     }
   };
 
-  if (!announcement || dismissed) return null;
+  if (!announcement) return null;
 
   const getIcon = () => {
     switch (announcement.type) {
       case 'info':
-        return <FaInfoCircle size={20} />;
+        return <FaInfoCircle size={24} className="text-blue-400" />;
       case 'warning':
-        return <FaExclamationTriangle size={20} />;
+        return <FaExclamationTriangle size={24} className="text-yellow-400" />;
       case 'error':
-        return <FaExclamationCircle size={20} />;
+        return <FaExclamationCircle size={24} className="text-red-400" />;
       case 'success':
-        return <FaCheckSquare size={20} />;
+        return <FaCheckSquare size={24} className="text-green-400" />;
       default:
-        return <FaInfoCircle size={20} />;
+        return <FaInfoCircle size={24} className="text-blue-400" />;
     }
   };
 
-  const getStyle = () => {
+  const getGradient = () => {
     switch (announcement.type) {
       case 'info':
-        return 'bg-blue-600/90 border-blue-400';
+        return 'from-blue-600/20 via-blue-500/10 to-transparent';
       case 'warning':
-        return 'bg-yellow-600/90 border-yellow-400';
+        return 'from-yellow-600/20 via-yellow-500/10 to-transparent';
       case 'error':
-        return 'bg-red-600/90 border-red-400';
+        return 'from-red-600/20 via-red-500/10 to-transparent';
       case 'success':
-        return 'bg-green-600/90 border-green-400';
+        return 'from-green-600/20 via-green-500/10 to-transparent';
       default:
-        return 'bg-blue-600/90 border-blue-400';
+        return 'from-blue-600/20 via-blue-500/10 to-transparent';
+    }
+  };
+
+  const getBorderColor = () => {
+    switch (announcement.type) {
+      case 'info':
+        return 'border-blue-500/30';
+      case 'warning':
+        return 'border-yellow-500/30';
+      case 'error':
+        return 'border-red-500/30';
+      case 'success':
+        return 'border-green-500/30';
+      default:
+        return 'border-blue-500/30';
     }
   };
 
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, y: -50 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -50 }}
-        className={`${getStyle()} border-b-2 backdrop-blur-sm`}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className={`relative bg-gradient-to-r ${getGradient()} border-b ${getBorderColor()} backdrop-blur-md`}
       >
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 flex-1">
-              <div className="flex-shrink-0 text-white">
-                {getIcon()}
-              </div>
-              <p className="text-white font-medium text-sm md:text-base">
-                {announcement.message}
-              </p>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setDismissed(true)}
-              className="flex-shrink-0 p-1 hover:bg-white/20 rounded-lg transition-colors"
-              aria-label="Zamknij"
-            >
-              <FaTimes className="text-white" size={16} />
-            </motion.button>
-          </div>
+        {/* Animated background effect */}
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            animate={{
+              backgroundPosition: ['0% 0%', '100% 100%'],
+            }}
+            transition={{
+              duration: 15,
+              repeat: Infinity,
+              repeatType: 'reverse',
+              ease: 'linear',
+            }}
+            className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage: 'radial-gradient(circle at center, white 1px, transparent 1px)',
+              backgroundSize: '50px 50px',
+            }}
+          />
         </div>
+
+        <div className="relative container mx-auto px-4 py-4">
+          <motion.div
+            initial={{ scale: 0.95 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.3, delay: 0.2 }}
+            className="flex items-center justify-center gap-4"
+          >
+            <motion.div
+              animate={{ 
+                rotate: [0, 5, -5, 0],
+                scale: [1, 1.1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 3,
+              }}
+              className="flex-shrink-0"
+            >
+              {getIcon()}
+            </motion.div>
+            <p className="text-white font-semibold text-base md:text-lg text-center">
+              {announcement.message}
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Bottom glow effect */}
+        <div className={`absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r ${getBorderColor()} opacity-50`} />
       </motion.div>
     </AnimatePresence>
   );
