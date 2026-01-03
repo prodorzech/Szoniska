@@ -19,7 +19,7 @@ export async function GET(
           select: {
             name: true,
             image: true,
-            isAdmin: true,
+            discordId: true,
           },
         },
       },
@@ -28,7 +28,17 @@ export async function GET(
       },
     });
 
-    return NextResponse.json(comments);
+    // Dodaj isAdmin na podstawie discordId
+    const adminIds = process.env.ADMIN_DISCORD_IDS?.split(',') || [];
+    const commentsWithAdmin = comments.map(comment => ({
+      ...comment,
+      user: {
+        ...comment.user,
+        isAdmin: comment.user.discordId ? adminIds.includes(comment.user.discordId) : false,
+      }
+    }));
+
+    return NextResponse.json(commentsWithAdmin);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 });
   }
