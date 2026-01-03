@@ -85,11 +85,6 @@ export default function EditPostModal({ post, onClose, onSuccess }: EditPostModa
     setVideoPreviews(videoPreviews.filter((_, i) => i !== index));
   };
 
-  const removeNewImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
-    setImagePreviews(imagePreviews.filter((_, i) => i !== index));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
