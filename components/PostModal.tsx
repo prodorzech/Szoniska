@@ -15,27 +15,33 @@ interface PostModalProps {
 
 export default function PostModal({ post, onClose, onUpdate }: PostModalProps) {
   const { data: session } = useSession();
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
   const [showFullGallery, setShowFullGallery] = useState(false);
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % post.images.length);
+  // Combine videos and images into one media array
+  const allMedia = [
+    ...(post.videos || []).map(url => ({ type: 'video' as const, url })),
+    ...post.images.map(url => ({ type: 'image' as const, url }))
+  ];
+
+  const nextMedia = () => {
+    setCurrentMediaIndex((prev) => (prev + 1) % allMedia.length);
   };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + post.images.length) % post.images.length);
+  const prevMedia = () => {
+    setCurrentMediaIndex((prev) => (prev - 1 + allMedia.length) % allMedia.length);
   };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && post.images.length > 0) prevImage();
-      if (e.key === 'ArrowRight' && post.images.length > 0) nextImage();
+      if (e.key === 'ArrowLeft' && allMedia.length > 0) prevMedia();
+      if (e.key === 'ArrowRight' && allMedia.length > 0) nextMedia();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentImageIndex]);
+  }, [currentMediaIndex]);
 
   return (
     <AnimatePresence>
@@ -63,85 +69,87 @@ export default function PostModal({ post, onClose, onUpdate }: PostModalProps) {
 
           <div className="overflow-y-auto max-h-[90vh]">
             <div className="flex flex-col lg:flex-row">
-              {/* Galeria zdjęć i filmów - lewa strona */}
-              {(post.images.length > 0 || (post.videos && post.videos.length > 0)) && (
+              {/* Galeria mediów - lewa strona */}
+              {allMedia.length > 0 && (
                 <div className="lg:w-1/2 relative bg-black">
-                  {/* Filmy */}
-                  {post.videos && post.videos.length > 0 && (
-                    <div className="space-y-4 p-4">
-                      {post.videos.map((video, idx) => (
-                        <div key={idx} className="relative">
-                          <video
-                            src={video}
-                            controls
-                            className="w-full rounded-lg"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Zdjęcia */}
-                  {post.images.length > 0 && (
                   <div className="relative aspect-square">
                     <AnimatePresence mode="wait">
-                      <motion.img
-                        key={currentImageIndex}
-                        src={post.images[currentImageIndex]}
-                        alt={`${post.title} - obraz ${currentImageIndex + 1}`}
-                        className="w-full h-full object-contain"
-                        initial={{ opacity: 0, x: 100 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -100 }}
-                        transition={{ duration: 0.3 }}
-                      />
+                      {allMedia[currentMediaIndex].type === 'video' ? (
+                        <motion.video
+                          key={currentMediaIndex}
+                          src={allMedia[currentMediaIndex].url}
+                          controls
+                          className="w-full h-full object-contain"
+                          initial={{ opacity: 0, x: 100 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -100 }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      ) : (
+                        <motion.img
+                          key={currentMediaIndex}
+                          src={allMedia[currentMediaIndex].url}
+                          alt={`${post.title} - media ${currentMediaIndex + 1}`}
+                          className="w-full h-full object-contain"
+                          initial={{ opacity: 0, x: 100 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -100 }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      )}
                     </AnimatePresence>
 
-                    {post.images.length > 1 && (
+                    {allMedia.length > 1 && (
                       <>
                         <button
-                          onClick={prevImage}
-                          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full backdrop-blur-sm transition-all"
+                          onClick={prevMedia}
+                          className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full backdrop-blur-sm transition-all z-10"
                         >
                           <FaChevronLeft size={24} />
                         </button>
                         <button
-                          onClick={nextImage}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full backdrop-blur-sm transition-all"
+                          onClick={nextMedia}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full backdrop-blur-sm transition-all z-10"
                         >
                           <FaChevronRight size={24} />
                         </button>
 
-                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 px-4 py-2 rounded-full backdrop-blur-sm">
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 px-4 py-2 rounded-full backdrop-blur-sm z-10">
                           <span className="text-white text-sm">
-                            {currentImageIndex + 1} / {post.images.length}
+                            {currentMediaIndex + 1} / {allMedia.length}
                           </span>
                         </div>
                       </>
                     )}
                   </div>
-                  )}
 
                   {/* Miniaturki */}
-                  {post.images.length > 1 && (
+                  {allMedia.length > 1 && (
                     <div className="grid grid-cols-5 gap-2 p-4 bg-black/50">
-                      {post.images.map((img, idx) => (
+                      {allMedia.map((media, idx) => (
                         <motion.div
                           key={idx}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={() => setCurrentImageIndex(idx)}
+                          onClick={() => setCurrentMediaIndex(idx)}
                           className={`aspect-square cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                            idx === currentImageIndex
+                            idx === currentMediaIndex
                               ? 'border-purple-500'
                               : 'border-transparent opacity-60 hover:opacity-100'
                           }`}
                         >
-                          <img
-                            src={img}
-                            alt={`Miniatura ${idx + 1}`}
-                            className="w-full h-full object-cover"
-                          />
+                          {media.type === 'video' ? (
+                            <video
+                              src={media.url}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <img
+                              src={media.url}
+                              alt={`Miniatura ${idx + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
                         </motion.div>
                       ))}
                     </div>
@@ -150,7 +158,7 @@ export default function PostModal({ post, onClose, onUpdate }: PostModalProps) {
               )}
 
               {/* Treść posta - prawa strona */}
-              <div className={`${(post.images.length > 0 || (post.videos && post.videos.length > 0)) ? 'lg:w-1/2' : 'w-full'} p-6 flex flex-col`}>
+              <div className={`${allMedia.length > 0 ? 'lg:w-1/2' : 'w-full'} p-6 flex flex-col`}>
                 <div className="flex items-center gap-3 mb-4">
                   {post.user.image ? (
                     <img

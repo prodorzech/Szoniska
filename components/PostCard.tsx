@@ -10,6 +10,10 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, onClick }: PostCardProps) {
+  const totalMedia = post.images.length + (post.videos?.length || 0);
+  const hasVideos = post.videos && post.videos.length > 0;
+  const hasImages = post.images.length > 0;
+
   return (
     <motion.div
       whileHover={{ scale: 1.02, y: -5 }}
@@ -17,9 +21,9 @@ export default function PostCard({ post, onClick }: PostCardProps) {
       onClick={onClick}
       className="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-xl overflow-hidden cursor-pointer shadow-xl shadow-purple-500/10 hover:shadow-purple-500/30 transition-all"
     >
-      {(post.images.length > 0 || (post.videos && post.videos.length > 0)) && (
+      {totalMedia > 0 && (
         <div className="relative h-56 overflow-hidden">
-          {post.videos && post.videos.length > 0 ? (
+          {hasVideos ? (
             <video
               src={post.videos[0]}
               className="w-full h-full object-cover"
@@ -32,18 +36,11 @@ export default function PostCard({ post, onClick }: PostCardProps) {
               className="w-full h-full object-cover"
             />
           )}
-          <div className="absolute bottom-2 right-2 flex gap-2">
-            {post.images.length > 1 && (
-              <div className="bg-black/70 px-3 py-1 rounded-full text-sm">
-                +{post.images.length - 1} zdjęć
-              </div>
-            )}
-            {post.videos && post.videos.length > 1 && (
-              <div className="bg-black/70 px-3 py-1 rounded-full text-sm">
-                +{post.videos.length - 1} filmów
-              </div>
-            )}
-          </div>
+          {totalMedia > 1 && (
+            <div className="absolute bottom-2 right-2 bg-black/70 px-3 py-1 rounded-full text-sm">
+              +{totalMedia - 1} więcej
+            </div>
+          )}
         </div>
       )}
 
