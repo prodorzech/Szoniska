@@ -170,8 +170,8 @@ function LoginContent() {
               Discord
             </button>
             <button
-              disabled
-              className="flex items-center justify-center gap-2 bg-gray-600 text-gray-400 font-semibold py-3 rounded-lg cursor-not-allowed opacity-50"
+              onClick={() => signIn('google', { callbackUrl: '/' })}
+              className="flex items-center justify-center gap-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-3 rounded-lg transition-colors"
             >
               <FaGoogle size={18} />
               Google
