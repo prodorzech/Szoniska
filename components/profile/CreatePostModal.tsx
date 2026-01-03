@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaUpload, FaFacebook, FaInstagram, FaTiktok } from 'react-icons/fa';
+import { FaTimes, FaUpload, FaFacebook, FaInstagram, FaTiktok, FaVideo, FaImage } from 'react-icons/fa';
 
 interface CreatePostModalProps {
   onClose: () => void;
@@ -13,7 +13,9 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [images, setImages] = useState<File[]>([]);
+  const [videos, setVideos] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [videoPreviews, setVideoPreviews] = useState<string[]>([]);
   const [enableFacebook, setEnableFacebook] = useState(false);
   const [enableInstagram, setEnableInstagram] = useState(false);
   const [enableTiktok, setEnableTiktok] = useState(false);
@@ -43,9 +45,34 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
     });
   };
 
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    if (videos.length + files.length > 5) {
+      setError('Maksymalnie 5 filmów');
+      return;
+    }
+
+    setVideos([...videos, ...files]);
+    
+    // Create previews
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVideoPreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const removeImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
     setImagePreviews(imagePreviews.filter((_, i) => i !== index));
+  };
+
+  const removeVideo = (index: number) => {
+    setVideos(videos.filter((_, i) => i !== index));
+    setVideoPreviews(videoPreviews.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,6 +105,24 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
         imageUrls.push(url);
       }
 
+      // Upload videos
+      const videoUrls: string[] = [];
+      
+      for (const video of videos) {
+        const formData = new FormData();
+        formData.append('file', video);
+        
+        const uploadRes = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!uploadRes.ok) throw new Error('Failed to upload video');
+        
+        const { url } = await uploadRes.json();
+        videoUrls.push(url);
+      }
+
       // Create post
       const res = await fetch('/api/posts', {
         method: 'POST',
@@ -86,6 +131,7 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
           title,
           description,
           images: imageUrls,
+          videos: videoUrls,
           facebookUrl: enableFacebook ? facebookUrl : null,
           instagramUrl: enableInstagram ? instagramUrl : null,
           tiktokUrl: enableTiktok ? tiktokUrl : null,
@@ -164,7 +210,8 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
             </div>
 
             <div>
-              <label className="block text-white font-semibold mb-2">
+              <label className="block text-white font-semibold mb-2 flex items-center gap-2">
+                <FaImage />
                 Zdjęcia (max 10)
               </label>
               <div className="space-y-4">
@@ -196,6 +243,51 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
                         <button
                           type="button"
                           onClick={() => removeImage(idx)}
+                          className="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <FaTimes size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-2 flex items-center gap-2">
+                <FaVideo />
+                Filmy (max 5)
+              </label>
+              <div className="space-y-4">
+                <label className="flex items-center justify-center w-full h-32 border-2 border-dashed border-blue-500/30 rounded-lg cursor-pointer hover:border-blue-500 transition-colors">
+                  <div className="text-center">
+                    <FaVideo className="mx-auto text-blue-400 mb-2" size={32} />
+                    <span className="text-gray-400">Kliknij aby dodać filmy</span>
+                    <p className="text-xs text-gray-500 mt-1">{videos.length}/5</p>
+                  </div>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    multiple
+                    onChange={handleVideoChange}
+                    className="hidden"
+                    disabled={videos.length >= 5}
+                  />
+                </label>
+
+                {videoPreviews.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {videoPreviews.map((preview, idx) => (
+                      <div key={idx} className="relative group">
+                        <video
+                          src={preview}
+                          className="w-full h-32 object-cover rounded-lg bg-black"
+                          controls
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeVideo(idx)}
                           className="absolute -top-2 -right-2 bg-red-600 hover:bg-red-700 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           <FaTimes size={12} />

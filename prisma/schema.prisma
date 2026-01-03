@@ -71,6 +71,7 @@ model Post {
   title           String
   description     String
   images          String[]
+  videos          String[]
   facebookUrl     String?
   instagramUrl    String?
   tiktokUrl       String?
