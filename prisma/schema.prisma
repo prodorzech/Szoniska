@@ -169,3 +169,13 @@ model SystemMaintenance {
   createdBy   String    // Admin ID który utworzył
   createdAt   DateTime  @default(now())
 }
+
+model Announcement {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  message     String    // Treść ogłoszenia
+  type        String    @default("info") // "info", "warning", "error", "success"
+  isActive    Boolean   @default(true)
+  createdBy   String    // Admin ID który utworzył
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
