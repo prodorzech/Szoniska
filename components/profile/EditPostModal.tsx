@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaTimes, FaUpload, FaFacebook, FaInstagram, FaTiktok } from 'react-icons/fa';
+import { FaTimes, FaUpload, FaFacebook, FaInstagram, FaTiktok, FaVideo, FaImage } from 'react-icons/fa';
 import type { Post } from '@/types/post';
 
 interface EditPostModalProps {
@@ -15,8 +15,11 @@ export default function EditPostModal({ post, onClose, onSuccess }: EditPostModa
   const [title, setTitle] = useState(post.title);
   const [description, setDescription] = useState(post.description);
   const [images, setImages] = useState<File[]>([]);
+  const [videos, setVideos] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>(post.images);
+  const [existingVideos, setExistingVideos] = useState<string[]>(post.videos || []);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [videoPreviews, setVideoPreviews] = useState<string[]>([]);
   const [enableFacebook, setEnableFacebook] = useState(!!post.facebookUrl);
   const [enableInstagram, setEnableInstagram] = useState(!!post.instagramUrl);
   const [enableTiktok, setEnableTiktok] = useState(!!post.tiktokUrl);
@@ -45,8 +48,41 @@ export default function EditPostModal({ post, onClose, onSuccess }: EditPostModa
     });
   };
 
+  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    
+    if (existingVideos.length + videos.length + files.length > 5) {
+      setError('Maksymalnie 5 filmów');
+      return;
+    }
+
+    setVideos([...videos, ...files]);
+    
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setVideoPreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const removeExistingImage = (index: number) => {
     setExistingImages(existingImages.filter((_, i) => i !== index));
+  };
+
+  const removeExistingVideo = (index: number) => {
+    setExistingVideos(existingVideos.filter((_, i) => i !== index));
+  };
+
+  const removeNewImage = (index: number) => {
+    setImages(images.filter((_, i) => i !== index));
+    setImagePreviews(imagePreviews.filter((_, i) => i !== index));
+  };
+
+  const removeNewVideo = (index: number) => {
+    setVideos(videos.filter((_, i) => i !== index));
+    setVideoPreviews(videoPreviews.filter((_, i) => i !== index));
   };
 
   const removeNewImage = (index: number) => {
