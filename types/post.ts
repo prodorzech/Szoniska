@@ -3,6 +3,7 @@ export interface Post {
   title: string;
   description: string;
   images: string[];
+  videos?: string[];
   facebookUrl?: string;
   instagramUrl?: string;
   tiktokUrl?: string;
