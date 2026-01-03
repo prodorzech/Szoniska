@@ -146,6 +146,11 @@ export default function CommentSection({ postId }: CommentSectionProps) {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="font-semibold text-white">{comment.user.name}</span>
+                  {comment.user.isAdmin && (
+                    <span className="px-2 py-0.5 bg-gradient-to-r from-red-600 to-purple-600 text-white text-xs font-bold rounded uppercase">
+                      Administrator
+                    </span>
+                  )}
                   <span className="text-xs text-gray-500">
                     {new Date(comment.createdAt).toLocaleDateString('pl-PL')}
                   </span>

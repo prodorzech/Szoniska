@@ -33,5 +33,6 @@ export interface Comment {
   user: {
     name: string;
     image?: string;
+    isAdmin?: boolean;
   };
 }
