@@ -74,9 +74,18 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-400 text-sm flex items-center gap-2">
-            © {currentYear} Szoniska. Wszystkie prawa zastrzeżone.
-          </p>
+          <div className="flex items-center gap-3">
+            <p className="text-gray-400 text-sm flex items-center gap-2">
+              © {currentYear} Szoniska. Wszystkie prawa zastrzeżone.
+            </p>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="px-3 py-1 bg-red-600 border-2 border-red-500 rounded-lg"
+              title="Treści wyłącznie dla osób pełnoletnich"
+            >
+              <span className="text-white font-bold text-sm">18+</span>
+            </motion.div>
+          </div>
           <p className="text-gray-400 text-sm flex items-center gap-2">
             Stworzone przez 7Team z <FaHeart className="text-red-500" />
           </p>
