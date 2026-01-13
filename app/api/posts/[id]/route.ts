@@ -72,11 +72,19 @@ export async function PATCH(
       where: { id: params.id },
     });
 
-    if (!post || post.userId !== session.user.id) {
+    if (!post) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    // Sprawdź czy użytkownik jest właścicielem lub adminem
+    const isOwner = post.userId === session.user.id;
+    const isAdmin = session.user.isAdmin;
+
+    if (!isOwner && !isAdmin) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    if (post.status !== 'APPROVED') {
+    if (post.status !== 'APPROVED' && !isAdmin) {
       return NextResponse.json({ error: 'Can only edit approved posts' }, { status: 400 });
     }
 
