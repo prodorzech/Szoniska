@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { title, description, images, videos, facebookUrl, instagramUrl, tiktokUrl } = body;
+    const { title, description, images, videos, facebookUrl, instagramUrl, tiktokUrl, isAnonymous } = body;
 
     const post = await prisma.post.create({
       data: {
@@ -113,6 +113,7 @@ export async function POST(req: NextRequest) {
         facebookUrl,
         instagramUrl,
         tiktokUrl,
+        isAnonymous: isAnonymous || false,
         userId: session.user.id,
         status: 'PENDING',
       },

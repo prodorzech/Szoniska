@@ -77,6 +77,7 @@ model Post {
   tiktokUrl       String?
   status          PostStatus @default(PENDING)
   isPinned        Boolean   @default(false)
+  isAnonymous     Boolean   @default(false)
   pinnedAt        DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt

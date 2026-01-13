@@ -12,6 +12,7 @@ export interface Post {
   status?: 'PENDING' | 'APPROVED' | 'REJECTED';
   isPinned?: boolean;
   pinnedAt?: string;
+  isAnonymous?: boolean;
   user: {
     id?: string;
     name: string;

@@ -160,27 +160,49 @@ export default function PostModal({ post, onClose, onUpdate }: PostModalProps) {
               {/* Treść posta - prawa strona */}
               <div className={`${allMedia.length > 0 ? 'lg:w-1/2' : 'w-full'} p-6 flex flex-col`}>
                 <div className="flex items-center gap-3 mb-4">
-                  {post.user.image ? (
-                    <img
-                      src={post.user.image}
-                      alt={post.user.name}
-                      className="w-12 h-12 rounded-full"
-                    />
+                  {post.isAnonymous ? (
+                    <>
+                      <img
+                        src="/logo.png"
+                        alt="Anonimowy"
+                        className="w-12 h-12 rounded-full"
+                      />
+                      <div>
+                        <p className="font-semibold text-white text-lg">Anonimowy</p>
+                        <p className="text-sm text-gray-400">
+                          {new Date(post.createdAt).toLocaleDateString('pl-PL', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </p>
+                      </div>
+                    </>
                   ) : (
-                    <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-lg">
-                      {post.user.name.charAt(0).toUpperCase()}
-                    </div>
+                    <>
+                      {post.user.image ? (
+                        <img
+                          src={post.user.image}
+                          alt={post.user.name}
+                          className="w-12 h-12 rounded-full"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                          {post.user.name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold text-white text-lg">{post.user.name}</p>
+                        <p className="text-sm text-gray-400">
+                          {new Date(post.createdAt).toLocaleDateString('pl-PL', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </p>
+                      </div>
+                    </>
                   )}
-                  <div>
-                    <p className="font-semibold text-white text-lg">{post.user.name}</p>
-                    <p className="text-sm text-gray-400">
-                      {new Date(post.createdAt).toLocaleDateString('pl-PL', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </p>
-                  </div>
                 </div>
 
                 <h2 className="text-3xl font-bold text-white mb-4">{post.title}</h2>

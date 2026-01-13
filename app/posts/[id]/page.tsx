@@ -16,6 +16,7 @@ interface Post {
   instagramUrl?: string;
   tiktokUrl?: string;
   createdAt: string;
+  isAnonymous?: boolean;
   user: {
     id: string;
     name: string;
@@ -117,27 +118,49 @@ export default function PostPage() {
 
           {/* Author Info */}
           <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-700">
-            {post.user.image ? (
-              <img
-                src={post.user.image}
-                alt={post.user.name}
-                className="w-12 h-12 rounded-full border-2 border-purple-500"
-              />
+            {post.isAnonymous ? (
+              <>
+                <img
+                  src="/logo.png"
+                  alt="Anonimowy"
+                  className="w-12 h-12 rounded-full border-2 border-purple-500"
+                />
+                <div>
+                  <p className="text-white font-semibold flex items-center gap-2">
+                    <FaUser className="text-purple-400" />
+                    Anonimowy
+                  </p>
+                  <p className="text-gray-400 text-sm flex items-center gap-2">
+                    <FaCalendarAlt />
+                    {new Date(post.createdAt).toLocaleString('pl-PL')}
+                  </p>
+                </div>
+              </>
             ) : (
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-lg font-bold border-2 border-purple-500">
-                {post.user.name.charAt(0).toUpperCase()}
-              </div>
+              <>
+                {post.user.image ? (
+                  <img
+                    src={post.user.image}
+                    alt={post.user.name}
+                    className="w-12 h-12 rounded-full border-2 border-purple-500"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-lg font-bold border-2 border-purple-500">
+                    {post.user.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div>
+                  <p className="text-white font-semibold flex items-center gap-2">
+                    <FaUser className="text-purple-400" />
+                    {post.user.name}
+                  </p>
+                  <p className="text-gray-400 text-sm flex items-center gap-2">
+                    <FaCalendarAlt />
+                    {new Date(post.createdAt).toLocaleString('pl-PL')}
+                  </p>
+                </div>
+              </>
             )}
-            <div>
-              <p className="text-white font-semibold flex items-center gap-2">
-                <FaUser className="text-purple-400" />
-                {post.user.name}
-              </p>
-              <p className="text-gray-400 text-sm flex items-center gap-2">
-                <FaCalendarAlt />
-                {new Date(post.createdAt).toLocaleString('pl-PL')}
-              </p>
-            </div>
           </div>
 
           {/* Content */}

@@ -46,23 +46,41 @@ export default function PostCard({ post, onClick }: PostCardProps) {
 
       <div className="p-5">
         <div className="flex items-center gap-3 mb-3">
-          {post.user.image ? (
-            <img
-              src={post.user.image}
-              alt={post.user.name}
-              className="w-10 h-10 rounded-full"
-            />
+          {post.isAnonymous ? (
+            <>
+              <img
+                src="/logo.png"
+                alt="Anonimowy"
+                className="w-10 h-10 rounded-full"
+              />
+              <div>
+                <p className="font-semibold text-white">Anonimowy</p>
+                <p className="text-xs text-gray-400">
+                  {new Date(post.createdAt).toLocaleDateString('pl-PL')}
+                </p>
+              </div>
+            </>
           ) : (
-            <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">
-              {post.user.name.charAt(0).toUpperCase()}
-            </div>
+            <>
+              {post.user.image ? (
+                <img
+                  src={post.user.image}
+                  alt={post.user.name}
+                  className="w-10 h-10 rounded-full"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold">
+                  {post.user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <div>
+                <p className="font-semibold text-white">{post.user.name}</p>
+                <p className="text-xs text-gray-400">
+                  {new Date(post.createdAt).toLocaleDateString('pl-PL')}
+                </p>
+              </div>
+            </>
           )}
-          <div>
-            <p className="font-semibold text-white">{post.user.name}</p>
-            <p className="text-xs text-gray-400">
-              {new Date(post.createdAt).toLocaleDateString('pl-PL')}
-            </p>
-          </div>
         </div>
 
         <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">

@@ -22,6 +22,7 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
   const [facebookUrl, setFacebookUrl] = useState('');
   const [instagramUrl, setInstagramUrl] = useState('');
   const [tiktokUrl, setTiktokUrl] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -135,6 +136,7 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
           facebookUrl: enableFacebook ? facebookUrl : null,
           instagramUrl: enableInstagram ? instagramUrl : null,
           tiktokUrl: enableTiktok ? tiktokUrl : null,
+          isAnonymous,
         }),
       });
 
@@ -423,6 +425,39 @@ export default function CreatePostModal({ onClose, onSuccess }: CreatePostModalP
                   )}
                 </div>
               </div>
+            </div>
+
+            <div className="border-t border-purple-500/30 pt-6">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={isAnonymous}
+                    onChange={(e) => setIsAnonymous(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <div className="w-6 h-6 rounded-md border-2 border-gray-600 bg-gray-800 peer-checked:bg-purple-600 peer-checked:border-purple-600 transition-all duration-200 flex items-center justify-center">
+                    {isAnonymous && (
+                      <motion.svg
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="w-4 h-4 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </motion.svg>
+                    )}
+                  </div>
+                </div>
+                <span className="text-white group-hover:text-purple-400 transition-colors font-semibold">
+                  Anonimowy post
+                </span>
+              </label>
+              <p className="text-sm text-gray-500 mt-2 ml-9">
+                Twój post będzie wyświetlany jako "Anonimowy" zamiast Twojego nicku
+              </p>
             </div>
 
             <div className="flex gap-4 pt-4">
