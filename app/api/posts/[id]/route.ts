@@ -81,7 +81,7 @@ export async function PATCH(
     }
 
     const body = await req.json();
-    const { title, description, images, videos, facebookUrl, instagramUrl, tiktokUrl } = body;
+    const { title, description, images, videos, facebookUrl, instagramUrl, tiktokUrl, isAnonymous } = body;
 
     const updatedPost = await prisma.post.update({
       where: { id: params.id },
@@ -93,6 +93,7 @@ export async function PATCH(
         facebookUrl,
         instagramUrl,
         tiktokUrl,
+        isAnonymous: isAnonymous !== undefined ? isAnonymous : post.isAnonymous,
         editedAt: new Date(),
       },
     });
