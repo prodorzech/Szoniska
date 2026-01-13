@@ -22,11 +22,13 @@ export default function PostCard({ post, onClick }: PostCardProps) {
       className="bg-gradient-to-br from-gray-900 to-black border border-purple-500/30 rounded-xl overflow-hidden cursor-pointer shadow-xl shadow-purple-500/10 hover:shadow-purple-500/30 transition-all"
     >
       {totalMedia > 0 && (
-        <div className="relative h-56 overflow-hidden">
+        <div className="relative h-56 overflow-hidden bg-gray-900">
           {hasVideos ? (
             <video
               src={post.videos![0]}
               className="w-full h-full object-cover"
+              preload="metadata"
+              playsInline
               muted
             />
           ) : (
