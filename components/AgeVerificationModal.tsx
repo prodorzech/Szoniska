@@ -39,7 +39,7 @@ export default function AgeVerificationModal() {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', duration: 0.5 }}
-          className="bg-gradient-to-br from-gray-900 to-black border-2 border-red-500/50 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-red-500/20"
+          className="bg-gradient-to-br from-gray-900 to-black border-2 border-purple-500/50 rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl shadow-purple-500/20"
         >
           {/* Logo/Icon */}
           <div className="flex justify-center mb-6">
@@ -49,7 +49,7 @@ export default function AgeVerificationModal() {
           </div>
 
           {/* Tytuł */}
-          <h2 className="text-3xl font-bold text-white text-center mb-4">
+          <h2 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-purple-600 text-center mb-4">
             Weryfikacja Wieku
           </h2>
 
@@ -65,7 +65,7 @@ export default function AgeVerificationModal() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleConfirm}
-              className="w-full py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold rounded-xl transition-all shadow-lg shadow-green-500/30"
+              className="w-full py-4 bg-gradient-to-r from-red-600 to-purple-600 hover:from-red-700 hover:to-purple-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-purple-500/30"
             >
               Tak, mam ukończone 18 lat
             </motion.button>
@@ -74,7 +74,7 @@ export default function AgeVerificationModal() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={handleDecline}
-              className="w-full py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-bold rounded-xl transition-all shadow-lg shadow-red-500/30"
+              className="w-full py-4 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl transition-all border border-gray-600"
             >
               Nie, nie mam ukończonych 18 lat
             </motion.button>
