@@ -9,9 +9,12 @@ export default function AgeVerificationModal() {
   const router = useRouter();
 
   useEffect(() => {
-    // Sprawdź czy użytkownik już potwierdził wiek
+    // Sprawdź czy użytkownik już potwierdził wiek lub jest na stronie age-restricted
     const ageVerified = localStorage.getItem('ageVerified');
-    if (!ageVerified) {
+    const ageRestricted = localStorage.getItem('ageRestricted');
+    const isOnRestrictedPage = window.location.pathname === '/age-restricted';
+    
+    if (!ageVerified && !ageRestricted && !isOnRestrictedPage) {
       setShow(true);
     }
   }, []);
@@ -22,6 +25,8 @@ export default function AgeVerificationModal() {
   };
 
   const handleDecline = () => {
+    localStorage.setItem('ageRestricted', 'true');
+    setShow(false);
     router.push('/age-restricted');
   };
 
